@@ -1,3 +1,4 @@
+# Jetson Tx2 보드에 맞춘 설정값
 GPU=1
 CUDNN=1
 CUDNN_HALF=0
