@@ -176,7 +176,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 
-  ## 2020.03.12.
+## 2020.03.12.
 
 - **OpenCR 재설치**
   - Ubuntu에서 Arduino IDE 실행 안됨
