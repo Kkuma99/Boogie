@@ -221,6 +221,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     ```
   - R+ Manager 2.0 이용해보려고 했으나 OpenCM 보드가 필요하여 못함
   - Robotis에 문의 -> Dynamixel Wizard를 이용해보고, 안되면 A/S 맡기라고 함
+  
 ---
 
 ## 2020.03.28.
