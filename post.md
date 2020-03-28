@@ -1,0 +1,174 @@
+# Boogie the Guider 정리 블로그
+
+## 개요
+- 프로젝트명: Boogie The Guider
+- 참여자: 강민지(wbclair7@konkuk.ac.kr), 권미경(kmk3942@konkuk.ac.kr) [2명]
+- 프로젝트 일자: 2019년 12월 ~ 진행중
+- 주제: Turtlebot3 Waffle과 Open Manipulator를 이용한 건물 안내로봇 제작
+
+현재 이 블로그는 연구상황 정리, 참고 자료 정리와 더불어 다른 사람들이 진행 시 겪을 수 있는 오류에 보탬이 되고자 개설하게 되었다. 진행 상황과 더불어 참고한 문헌 혹은 참고할만한 문헌, 에러 해결 방법 등에 대해서 올릴 예정이다.
+
+-------------
+## 2020년도 겨울방학 이전 진행상황
+- 기존의 RaspberryPi 대신 Jetson TX2를 Turtlebot에 탑재하여 개발환경 구축(Ubuntu 16.04 / ROS kinetic)
+- 259장의 이미지를 YOLO training 후 화살표 이미지 detect 성공
+
+```
+Jetson TX2의 환경 구축단계에 상당한 시행착오를 겪었음. 
+단계는 다음과 같다 ->
+
+- Jetson TX2에 최신 버전인 jetpack 4.3을 설치 (우분투 18.04 버전으로 ROS melodic 버전이 stable하지 않았음)
+
+- Jetpack 다운그레이드를 위하여 초기화를 하고 우분투 16.04로 변경하였음. 
+jetpack 3.3.1을 사용하였으나 설치과정에서 중간에 필요한 툴들이 깔리지 않았음.
+
+이에 이어 OpenCV 및 CUDA와 CUdnn을 직접 설치하였으나 내장 메모리의 부족 단계로 다시 초기화를 진행
+
+- Jetpack 3.3.1을 재설치
+```
+
+--------------
+## 2020.03.05
+
+### TIP (참고용)
+-리눅스에서 압축풀기: 
+https://dbrang.tistory.com/625
+
+
+- **Jetpack 3.3.1로 새로 설치**
+  - 이전에 설치한 Jetpack에서 OpenCV와 Cuda, Cudnn이 제대로 설치되지 않아 개별적으로 설치해서 용량이 부족하다고 판단했기 때문
+  
+  [참고사이트](https://www.guruhong.com/33)
+
+  이전에 설치되어 있던것에서 재설치가 완벽하게 진행되었음.
+  
+  이전에는 CUDA 및 CUdnn의 경우 root단에서 확인해보면 실제로 안깔려 있었음.
+  jetpack 설치를 다양한 노트북으로 진행했는데 성능의 차이인가 라는 의문이 있음.
+
+  tip -> 재설치를 하게 되는 경우 wifi보단 랜선을 연결하여 설치를 진행하는게 편하다. 또한 반드시 허브를 준비할 것
+
+- **500G SSD 사용하기로 결정**
+  - 64G SD 사용하려고 했으나 500G가 더 안정적이라고 판단했기 때문
+  - 메모리 문제를 해결하고 다양한 필요 프로그램 설치에 어려움을 없앤다.
+
+  사용할 ssd: BARACUDA SATA SSD
+---
+
+## 2020.03.06
+- **SSD로 부팅 설정**
+  - Booting Rootfs off SD Card on Jetson TX1
+
+  ssd 를 젯슨에 연결하게 되면 재부팅을 진행한다. 처음에 연결하고 ssd를 확인할 수 없었으나 재부팅 후 확인 가능했음.
+
+  진행 방법: https://www.youtube.com/watch?v=ZpQgRdg8RmA&t=377s
+
+  유튜브에서 시키는대로 따라하면 거의 진행은 가능하다.
+
+  ```
+  해결하지 못한 문제점:
+  현재 젯팩 3.3.1을 이용하고 있는데 커널이 최신버전으로 올라와 있다.
+  git에서 예전 버전을 찾았지만 sh명령어 실행도중 에러가 발생함.
+  ```
+
+---
+
+## 2020.03.09
+### Kernel과의 싸움
+- **SSD를 주메모리로 설정**
+참고: Youtube video `Develop on SSD - NVIDIA Jetson TX Dev Kits`
+https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
+
+  `./makeKernel.sh`에서 오류남:
+          ```
+          recipe for target 'drivers' failed
+          ```
+      - 그래서 구글링
+      https://devtalk.nvidia.com/default/topic/1019770/error-when-building-device-tree-in-l4t-28-1-for-jetson-tx1/
+      
+    위 링크에서 NVIDA Guide 링크 있어서 참고하여 시도 : `NVIDIA Tegra Linux Driver Package Development Guide`
+      https://docs.nvidia.com/jetson/archives/l4t-archived/l4t-271/index.html
+      - 하다가 에러가 발생하여 중도에 멈춤
+
+- **opencv3.4.6으로 upgrade**
+    - 사용했던 Jetpack 3.3.1에 내장된 opencv3.3.1으로는 gstreamer가 작동하지 않기 때문
+    - OpenCV를 다운받고 귀가
+
+    다음에 할 일 OpenCV 확인하기
+---
+
+## 2020.03.10
+- 오자마자 opencv upgrade 돌려놓은거에 권한 잠겨있어서 암호 입력함
+
+  ... 프로젝트 할 때는 무조건 화면 보호기 끄고 가기
+  
+- **USB Cam 실행을 위한 설정**
+  - OpenCV 3.4.6으로 upgrade 성공 했는데도
+      ```
+      ~/project/jetson_nano/opencv$ python tegra-cam.py
+      ```
+      내장 Camera 실행이 안됨
+      ```
+      ImportError: No module named cv2
+      ```
+  - 서치 결과 python용 opencv가 설치되지 않아 생긴 문제로 판단
+    - python opencv 설치 시도
+        ```
+        pip install opencv-python
+        ```
+        : 에러
+        ```
+        sudo apt install python-opencv
+        ```
+        : cv2 import 성공
+  - 근데 다른 에러남
+- **built in 카메라 실행 성공**
+  - `use camera on jetson TX2` 
+  https://devtalk.nvidia.com/default/topic/1022265/jetson-tx2/use-camera-on-jetson-tx2/
+    - Honey_Patouceul
+        ```
+        Still unclear what is your use case, but I'll try to summarize:
+
+        The onboard camera is a bayer sensor.
+
+        If you access it through v4l2 interface, you'll get bayer format into CPU memory. Try:
+        v4l2-ctl -d /dev/video0 --list-formats
+
+        If you access it through gstreamer interface, then plugin nvcamerasrc can provide different formats (I420, NV12...) into NVMM memory. Try:
+        gst-inspect-1.0 nvcamerasrc
+        and see its src capabilities.
+        For example:
+        gst-launch-1.0 nvcamerasrc ! 'video/x-raw(memory:NVMM),width=640, height=480, framerate=30/1, format=NV12' ! nvvidconv flip-method=2 ! nvegltransform ! nveglglessink -e
+        should show your camera capture in a window. Other plugins may convert into many other formats. Searching this forum you should find many examples.
+
+        You may also have a look to Tegra MultiMedia API and Argus, depending on what you intend to do with it.
+        ```
+    - 핵심:
+        ```
+        gst-launch-1.0 nvcamerasrc ! 'video/x-raw(memory:NVMM),width=640, height=480, framerate=30/1, format=NV12' ! nvvidconv flip-method=2 ! nvegltransform ! nveglglessink -e
+        ```
+- **USB Cameara 실행 성공**
+  참고: `How to Capture and Display Camera Video with Python on Jetson TX2`
+  https://jkjung-avt.github.io/tx2-camera-with-python/
+  ```
+  $ python3 tegra-cam.py --usb --vid 1 --width 1280 --height 720
+  ```
+- 다음에 도전해볼 것
+    `How to Capture Camera Video and Do Caffe Inferencing with Python on Jetson TX2`
+    https://jkjung-avt.github.io/tx2-camera-caffe/
+
+- **Darknet 설치**
+  - 이전에 뜬 에러 `Video-stream stopped`로 인해 다른 다크넷(https://github.com/AlexeyAB/darknet) 설치
+  참고: `Video-stream stopped! error`
+  https://github.com/stereolabs/zed-yolo/issues/11
+    - image_opencv.cpp 파일 수정
+    참고: https://github.com/dlwnstjr2004/EskerJuneA/tree/master/src
+    - makefile 실패
+  - 이전에 설치했던 다크넷(https://github.com/pjreddie/darknet.git)으로 다시 설치함
+
+- **Yolo mark 설치**
+  참고: `[5] YOLO 데이터 학습`
+  https://juni-94.tistory.com/10?category=802791
+
+- **ROS 설치**
+  참고: `ROBOTIS e-Manual Turtlebot3`
+  http://emanual.robotis.com/docs/en/platform/turtlebot3/raspberry_pi_3_setup/#raspberry-pi-3-setup
