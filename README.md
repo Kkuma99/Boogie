@@ -208,6 +208,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ---
 
 ## 2020.03.21.
+### OpenCR 보드에 귀신들림..
 - **OpenCR 확인**
   - OpenCR 확인을 위해 로봇 분해
   - OpenCR의 PUSH Sw1을 눌러 DXL의 작동을 확인해본 결과 1번 Motor만 돌아가고 2번은 돌아가지 않음
