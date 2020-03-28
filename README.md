@@ -50,8 +50,8 @@ https://dbrang.tistory.com/625
 - **500G SSD 사용하기로 결정**
   - 64G SD 사용하려고 했으나 500G가 더 안정적이라고 판단했기 때문
   - 메모리 문제를 해결하고 다양한 필요 프로그램 설치에 어려움을 없앤다.
-
-  사용할 ssd: BARACUDA SATA SSD
+  - 사용할 SSD: BARACUDA SATA SSD
+  
 ---
 
 ## 2020.03.06
@@ -93,7 +93,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 사용했던 Jetpack 3.3.1에 내장된 opencv3.3.1으로는 gstreamer가 작동하지 않기 때문
     - OpenCV를 다운받고 귀가
 
-    다음에 할 일 OpenCV 확인하기
+- 다음에 할 일 OpenCV 확인하기
+    
 ---
 
 ## 2020.03.10
@@ -172,3 +173,60 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **ROS 설치**
   참고: `ROBOTIS e-Manual Turtlebot3`
   http://emanual.robotis.com/docs/en/platform/turtlebot3/raspberry_pi_3_setup/#raspberry-pi-3-setup
+
+---
+
+  ## 2020.03.12.
+
+- **OpenCR 재설치**
+  - Ubuntu에서 Arduino IDE 실행 안됨
+  - 민지 개인노트북에 Arduino IDE 설치하여 OpenCR board에 16.04 버전으로 재설치
+
+---
+
+## 2020.03.16.
+- **SLAM 시도(실패)**
+  - SLAM 시도해 보려고 했으나 turtlebot bringup에서 오류
+    ```
+    [ERROR] [1584332348.587128343]: An exception was thrown: open: No such file or directory
+    ``` 
+    ```
+    [ERROR] [1584332750.539349148]: An exception was thrown: open: No such file or directory
+    [ERROR] [1584332751.183600]: Error opening serial: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+    ```
+  - 계속 ttyACM0 포트 관련해서 에러메세지가 뜨는데 구글링해도 답이 안나옴
+  - 문득 Jetson의 USB 포트가 3.0인데, 사용하고 있던 USB Hub의 포트가 2.0인 것을 보고 그 문제가 원인인 것으로 예상 - Hub를 바꿔보기로 결정
+
+---
+
+## 2020.03.17.
+- **ttyACM0 문제 해결**
+  - USB Hub 3.0으로 변경했더니 bringup 잘되고 포트 에러도 안남
+- **SLAM 재시도**
+  - launch는 다 되는데 teleop 실행 후 조작이 안됨
+
+---
+
+## 2020.03.21.
+- **OpenCR 확인**
+  - OpenCR 확인을 위해 로봇 분해
+  - OpenCR의 PUSH Sw1을 눌러 DXL의 작동을 확인해본 결과 1번 Motor만 돌아가고 2번은 돌아가지 않음
+    - 로봇케이블을 바꿔도 증상 동일
+    - Turtelbot3 burger(17번)의 DXL을 연결해도 증상 동일
+    - OpenCR(17번)을 변경해도 증상 동일
+  - 그 와중에 waffle에 쓰던 OpenCR 전원스위치(Toggle) 고장 -> 부품함에 있던 새 OpenCR로 변경(어쨋든 작동 안함)
+  - Arduino IDE로 motor 열고 Serial monitor 켜서 Setup right motor 해봤는데 에러 발생
+    ```
+    [TxRxResult] There is no status packet!
+    ```
+  - R+ Manager 2.0 이용해보려고 했으나 OpenCM 보드가 필요하여 못함
+  - Robotis에 문의 -> Dynamixel Wizard를 이용해보고, 안되면 A/S 맡기라고 함
+---
+
+## 2020.03.28.
+- **Dynamixel Wizard 이용**
+  - Minji_UBUNTU에 Dynamixel Wizard 설치
+  - OpenCR에 usb_to_dxl 업로드
+  - Scan 했을 때 아무 변화 없음
+  - Recovery 실패
+- 다음 주 평일 중에 문의전화 예정
