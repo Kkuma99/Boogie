@@ -232,3 +232,12 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - Scan 했을 때 아무 변화 없음
   - Recovery 실패
 - 다음 주 평일 중에 문의전화 예정
+
+---
+
+## 2020.03.31
+본사에 문의했으나 통신문제일 수도 있다는 가능성을 들었음.
+
+같은 문제를 발견 : https://github.com/ROBOTIS-GIT/OpenCR/issues/203
+
+
