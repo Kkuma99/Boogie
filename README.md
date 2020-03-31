@@ -236,8 +236,19 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ---
 
 ## 2020.03.31
-본사에 문의했으나 통신문제일 수도 있다는 가능성을 들었음.
-
-같은 문제를 발견 : https://github.com/ROBOTIS-GIT/OpenCR/issues/203
-
+- **Dynamixel Wizard를 이용한 점검**
+  - ROBOTIS 본사 기술지원팀에 문의한 결과 통신문제일 수도 있다는 가능성을 들었음.
+  - OpenCR에 usb_to_dxl을 업로드하여 Dynamixel Wizard를 시도해보았으나 아래 링크에서 U2D2가 아닌 OpenCR을 이용하면 불안정할 수 있다고 하여 U2D2로 시도
+    - 참고: `OpenCR Board no longer recognizing dynamixels after firmware update`
+    https://github.com/ROBOTIS-GIT/OpenCR/issues/203
+    - 참고: `DYNAMIXEL Wizard 2.0 Firmware Recovery with U2D2`
+    https://youtu.be/PgbIAK2Qg1Y
+    - 학교노트북(5번)의 윈도우에 Dynamixel Wizard 2.0을 설치하고 Dynamixel과 연결 성공
+  - 2번 모터의 ID가 ID1으로 되어있어 ID2로 변경하였으나 OpenCR SW test 결과 같은 증상 보임(1번 모터만 작동)
+  - 2번 모터를 Firmware Recovery해 보았으나 작동 안함
+  - Dynamixel Wizard를 이용한 자가진단 [도구]->[자가진단]
+    - 2번 모터를 자가진단해 본 결과 나머지는 정상이었으나 '속도가 사양보다 낮습니다'라는 문구가 뜸
+    - 1번 모터를 자가진단 해 본 결과 나머지는 정상이었으나 '속도가 사양보다 높습니다'라는 문구가 뜸
+    - 자가진단을 하면서 팩토리리셋(Factory reset)이 되었기 때문에 복구도 해 보았으나(v44, v43 버전 둘 다 해봄) 두 모터 다 작동 안함
+  - A/S 요청 필요하다고 판단
 
