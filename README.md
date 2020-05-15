@@ -252,3 +252,21 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 자가진단을 하면서 팩토리리셋(Factory reset)이 되었기 때문에 복구도 해 보았으나(v44, v43 버전 둘 다 해봄) 두 모터 다 작동 안함
   - A/S 요청 필요하다고 판단
 
+## 2020.04.16.
+- **A/S 센터로 배송 보냄**
+  - Tutlebot3 Waffle Pi의 Dynamixel 2개, OpenCR 1개
+
+## 2020.04.18.
+- **수리 완료하여 부품 다시 받음**
+  - OpenCR 스위치: 전원을 양쪽에서 공급하면 일시적으로 작동하지 않을 수 있으나 현재는 문제 없음
+  - Dynamixel: setting 문제로 현재는 문제 없다고 함
+
+## 2020.05.15.
+- **분해한 Turtlebot 다시 조립**
+- **OpenCR Dynamixel 작동 test**
+  - 또 안됨!!!!! PUSH SW1, SW2 둘다 해봤으나 2번 Dynamixel이 여전히 작동하지 않음
+  - teleop 안됨
+- **다음 계획**
+  - 준형님이 관리하던 Waffle의 Dynamixel을 분해하여 test해도 되는지 여쭤볼 것
+  - ROBOTIS에 전화해서 setting후 test 완료된건지 확인
+  - U2D2로 다시 Dynamixel setting
