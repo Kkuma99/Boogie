@@ -216,7 +216,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - Turtelbot3 burger(17번)의 DXL을 연결해도 증상 동일
     - OpenCR(17번)을 변경해도 증상 동일
   - 그 와중에 waffle에 쓰던 OpenCR 전원스위치(Toggle) 고장 -> 부품함에 있던 새 OpenCR로 변경(어쨋든 작동 안함)
-  - Arduino IDE로 motor 열고 Serial monitor 켜서 Setup right motor 해봤는데 에러 발생
+  - Arduino IDE로 turtlebot3_setup_motor 열고 Serial monitor 켜서 Setup right motor 해봤는데 에러 발생
     ```
     [TxRxResult] There is no status packet!
     ```
@@ -235,7 +235,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 
-## 2020.03.31
+## 2020.03.31.
 - **Dynamixel Wizard를 이용한 점검**
   - ROBOTIS 본사 기술지원팀에 문의한 결과 통신문제일 수도 있다는 가능성을 들었음.
   - OpenCR에 usb_to_dxl을 업로드하여 Dynamixel Wizard를 시도해보았으나 아래 링크에서 U2D2가 아닌 OpenCR을 이용하면 불안정할 수 있다고 하여 U2D2로 시도
@@ -252,14 +252,20 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 자가진단을 하면서 팩토리리셋(Factory reset)이 되었기 때문에 복구도 해 보았으나(v44, v43 버전 둘 다 해봄) 두 모터 다 작동 안함
   - A/S 요청 필요하다고 판단
 
+---
+
 ## 2020.04.16.
 - **A/S 센터로 배송 보냄**
   - Tutlebot3 Waffle Pi의 Dynamixel 2개, OpenCR 1개
+
+---
 
 ## 2020.04.18.
 - **수리 완료하여 부품 다시 받음**
   - OpenCR 스위치: 전원을 양쪽에서 공급하면 일시적으로 작동하지 않을 수 있으나 현재는 문제 없음
   - Dynamixel: setting 문제로 현재는 문제 없다고 함
+
+---
 
 ## 2020.05.15.
 - **분해한 Turtlebot 다시 조립**
@@ -270,3 +276,15 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 준형님이 관리하던 Waffle의 Dynamixel을 분해하여 test해도 되는지 여쭤볼 것
   - ROBOTIS에 전화해서 setting후 test 완료된건지 확인
   - U2D2로 다시 Dynamixel setting
+
+---
+
+## 2020.05.22.
+- **다른 와플로 test
+  - 우리 dynamixel을 다른 OpenCR에 연결했을 때 ID2 작동 X
+  - 다른 dynamixel을 우리 OpenCR에 연결했을 때 ID2 작동 X
+- **U2D2로 다시 Dynamixel setting 확인
+- **ROBOTIS에 문의전화
+  - 우리가 시도했던 모든 것들을 시켜서 다시 해봤지만 작동하지 않아서 SMPS를 확인해보라고 하심
+  - **Dynamixel(XM430-W210-T)이 12V를 인가해야 정상 작동하는데, 우리가 19V짜리 SMPS를 사용하고 있었음
+  - **결론: 우리는 한달 넘게 멍청한 짓을 했다. SMPS 잘 확인하자.
