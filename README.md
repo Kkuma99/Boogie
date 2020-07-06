@@ -280,11 +280,11 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ---
 
 ## 2020.05.22.
-- **다른 와플로 test
+- **다른 와플로 test**
   - 우리 dynamixel을 다른 OpenCR에 연결했을 때 ID2 작동 X
   - 다른 dynamixel을 우리 OpenCR에 연결했을 때 ID2 작동 X
-- **U2D2로 다시 Dynamixel setting 확인
-- **ROBOTIS에 문의전화
+- **U2D2로 다시 Dynamixel setting 확인**
+- **ROBOTIS에 문의전화**
   - 우리가 시도했던 모든 것들을 시켜서 다시 해봤지만 작동하지 않아서 SMPS를 확인해보라고 하심
-  - **Dynamixel(XM430-W210-T)이 12V를 인가해야 정상 작동하는데, 우리가 19V짜리 SMPS를 사용하고 있었음
-  - **결론: 우리는 한달 넘게 멍청한 짓을 했다. SMPS 잘 확인하자.
+  - Dynamixel(XM430-W210-T)이 12V를 인가해야 정상 작동하는데, 우리가 19V짜리 SMPS를 사용하고 있었음
+  - *결론: 우리는 한달 넘게 멍청한 짓을 했다. SMPS 잘 확인하자.*
