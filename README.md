@@ -293,6 +293,17 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ---
 
 ## 2020.07.11
-jetson pinout 참고 사이트: https://www.jetsonhacks.com/nvidia-jetson-nano-j41-header-pinout/
-
-(화살표 있는 부분이 1)
+- **와플 환경 다시 test**
+  - jetson pinout 참고 사이트: https://www.jetsonhacks.com/nvidia-jetson-nano-j41-header-pinout/
+   
+   (화살표 있는 부분이 1)
+   
+  - Jetson TX2와 호환이 안되는 것 같음
+  - lidar 값을 받아오질 못하고 텔레옵키 또한 작동 안함 (오로지 roscore 구동 및 그 외의 launch만 진행됨)
+  - 라즈베리파이에 환경 구축해둠 (원래 세팅대로 우선 진행하고 젯슨에서는 영상처리 하여 싱크 맞춰서 라즈베리에 넘겨볼 계획)
+  
+- **할 일**
+  - 회사 문의 게시판에 세팅 문의
+  - 대회 지원금 외 교내 문의
+  - conda - pytorch, cv .. etc download
+  - box image - annotation
