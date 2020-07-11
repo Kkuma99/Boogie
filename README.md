@@ -288,3 +288,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 우리가 시도했던 모든 것들을 시켜서 다시 해봤지만 작동하지 않아서 SMPS를 확인해보라고 하심
   - Dynamixel(XM430-W210-T)이 12V를 인가해야 정상 작동하는데, 우리가 19V짜리 SMPS를 사용하고 있었음
   - *결론: 우리는 한달 넘게 멍청한 짓을 했다. SMPS 잘 확인하자.*
+
+---
+
+## 2020.07.11
+jetson pinout 참고 사이트: https://www.jetsonhacks.com/nvidia-jetson-nano-j41-header-pinout/
+
+(화살표 있는 부분이 1)
