@@ -292,7 +292,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 
-## 2020.07.11
+## 2020.07.11.
 - **와플 환경 다시 test**
   - jetson pinout 참고 사이트: https://www.jetsonhacks.com/nvidia-jetson-nano-j41-header-pinout/
    
@@ -307,3 +307,22 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 대회 지원금 외 교내 문의
   - conda - pytorch, cv .. etc download
   - box image - annotation
+
+---
+
+## 2020.07.18.
+- **Conda 설치**
+- 상자 사진 수집
+#### 할일
+- 적재 알고리즘 개발
+- 이미지 Annotation
+  
+---
+
+## 2020.07.30.
+- ROBOTIS 문의 결과 SBC setting은 도움줄 수 없다고 답변받음
+  - Jetson과 RaspberryPi를 따로 구동해야 할 듯함
+- **SLAM 시도**
+  - 라즈베리파이로 SLAM 실행
+  - 로봇팔은 인식하지 않는 것으로 보임
+    - teleop로 이동시켜봐도 문제 없어 보임(라이다와의 거리가 너무 가까워서? 이유는 확실하지 않음)
