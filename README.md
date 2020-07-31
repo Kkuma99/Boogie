@@ -326,3 +326,18 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 라즈베리파이로 SLAM 실행
   - 로봇팔은 인식하지 않는 것으로 보임
     - teleop로 이동시켜봐도 문제 없어 보임(라이다와의 거리가 너무 가까워서? 이유는 확실하지 않음)
+- **GPU**
+  - Google의 Cloud GPU를 사용하려고 했으나 페이지에서 다음 절차로 안넘어가짐
+
+---
+
+## 2020.07.31.
+- **Box Detecting**
+  - 다음 링크를 참고할 예정
+  fontenay-ronan.fr/computer-vision-a-box-on-a-industrial-conveyor/
+  - 수정 중
+
+#### 내일 할 일
+- Box Detecting 알고리즘 개발
+- Jetson - Raspberry 간 Sync
+- Google Cloud GPU
