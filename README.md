@@ -341,3 +341,11 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - Box Detecting 알고리즘 개발
 - Jetson - Raspberry 간 Sync
 - Google Cloud GPU
+
+---
+
+## 2020.08.01.
+- **진행정리**
+  - GCP는 대회 지급 연구비에서 해결하기 어려운 가격 / 사용하려 해도 사이트에서 가입이 안됨 -> google colab pro 사용 예정 (2달)
+  - 로봇팔에 맞춰서 박스 크기 다양하게 프린트 할 예정
+  - 컨베이어벨트는 구매 예정
