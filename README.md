@@ -370,6 +370,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
    ```
    tty checking command: dmesg | grep tty
    ```
+   ttyACM0: https://github.com/NVIDIA-AI-IOT/turtlebot3
+   maybe have to check kernel
    
 - **Box Detecting**
   - 컨투어를 찾아서(초록색) 면적이 가장 큰 컨투어를 직사각형으로 표시(빨간색)
