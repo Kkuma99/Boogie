@@ -350,16 +350,19 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 로봇팔에 맞춰서 박스 크기 다양하게 프린트 할 예정
   - 컨베이어벨트는 구매 예정
   
-- **박스알고리즘**
+- **박스 인식 알고리즘**
   - 픽셀단위로 접근하고 빛 조절 진행하면 박스 이미지 처리할 필요 없을 것으로 예상
   
-- **인공지능 사용 부분**
+- **바코드 인식**
   - 만약 박스 처리에 인공지능이 필요없다면 바코드 부분에만 사용하면 됨(:만약 바코드가 제 위치에 없을 때 알람을 주는 형태로 가야하지 않을까?)
   - 바코드 생성은 홈페이지에서 진행할 예정
   - 바코드 위치 인식은 영상처리로 진행(다음 링크를 참고할 예정)
   https://github.com/kairess/qrcode_barcode_detection
   pzbar에서 decoding도 됨
-  - jetson tx2 version - barcode_jetson.py
+  - jetson tx2 version으로 수정하여 코드 생성 - barcode_jetson.py 참고
+  ```
+  $ python3 barcode_jetson.py --usb --vid 1 --width 1280 --height 720
+  ```
   
 - **sync or sbc problem**
   - jetson tx2 doesn't get lidar data -> maybe ttyACM0 and ttyUSB0 problem
@@ -450,5 +453,15 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     ```
   - 컨투어와 영역 면적만으로 박스를 detecting할 수 있는가? Harris 코너검출을 함께 이용하는 방법은?
   
-#### next week 할 일
-- minji: check kernel, open-manipulator, yolo idea
+#### 다음 주 할 일
+- 강민지
+  - kernel 문제 확인(ttyACM0 ↔ ttyUSB0 포트 변경)
+    - ttyUSB0: LDS(LiDAR)
+    - ttyACM0: OpenCR
+  - open-manipulator 구동
+- 권미경
+  - 트럭 상황 3D로 표현하는 방법 찾기(C++ or Python)
+  - 적재 알고리즘 개발
+  - 바코드 인식 코드 수정
+- 공통
+  - 딥러닝 활용 아이디어
