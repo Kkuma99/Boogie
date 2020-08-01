@@ -366,6 +366,11 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 2 ways to solve the problem 
    1. change ttyUSB0 to ttyACM0
    2. use two board and sync the data
+   
+   ```
+   tty checking command: dmesg | grep tty
+   ```
+   
 - **Box Detecting**
   - 컨투어를 찾아서(초록색) 면적이 가장 큰 컨투어를 직사각형으로 표시(빨간색)
   - 조명에 따라 결과가 달라지므로 threshold trackbar를 추가하여 적절한 threshold값을 찾은 후 대입해 줌(새천년관 1006호에서는 142가 적합함)
