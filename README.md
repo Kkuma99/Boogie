@@ -449,3 +449,6 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     cv2.destroyAllWindows()
     ```
   - 컨투어와 영역 면적만으로 박스를 detecting할 수 있는가? Harris 코너검출을 함께 이용하는 방법은?
+  
+#### next week 할 일
+- minji: check kernel, open-manipulator, yolo idea
