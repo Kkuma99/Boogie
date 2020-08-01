@@ -358,3 +358,4 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 바코드 생성은 홈페이지에서 진행할 예정
   - 바코드 위치 인식은 영상처리로 진행(다음 링크를 참고할 예정)
   https://github.com/kairess/qrcode_barcode_detection
+  pzbar에서 decoding도 됨
