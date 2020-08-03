@@ -476,7 +476,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
        kernel만 수정 가능 (documentation 보기)
     2. Rpi와 tx2의 중간 ssd 등을 거치고 거기에 공유폴더 생성해서 활용
     3. 라우터 사용
-    4. TX2는 micro-B USB RPi는 USB로 연결을 하여 호스트를 이더넷 취급하여 연결 (찾아봐야함)
+    4. TX2는 micro-B USB RPi는 USB로 연결을 하여 호스트를 이더넷 취급하여 연결 (찾아봐야함) : 
+    https://forums.developer.nvidia.com/t/how-to-communicate-between-raspberry-pi-3b-and-jetson-tx2/80559
   
 - **3D로 데이터 보여주기**
   - OpenGL 사용? (3d 렌더링이 잘되어있다고함)
