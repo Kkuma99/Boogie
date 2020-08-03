@@ -469,9 +469,11 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ---
 
 ## 2020.08.03.
+! ping 확인해보기 (라이더)
 - **sync 계획정리**
     1. flash는 아예 처음부터 진행해야함 - jetpack 최근 버전을 고려해보기
        용준오빠네 jetson tx2로 테스트해보고 만약 된다면 flash하기 (나머지는 내재되어있으니까 ssd -> ros -> yolo) (토요일 테스트)
+       kernel만 수정 가능 (documentation 보기)
     2. Rpi와 tx2의 중간 ssd 등을 거치고 거기에 공유폴더 생성해서 활용
     3. 라우터 사용
     4. TX2는 micro-B USB RPi는 USB로 연결을 하여 호스트를 이더넷 취급하여 연결 (찾아봐야함)
@@ -480,3 +482,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - OpenGL 사용? (3d 렌더링이 잘되어있다고함)
   - Matplotlib
   - pandas
+
+- **아이디어
+ - 파손과 관련해서 퍼센트 나타내기?
+ - 이더넷을 연결하는게 대회 명목과 맞을것으로 예상됨
