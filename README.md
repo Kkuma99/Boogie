@@ -478,3 +478,5 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   
 - **3D로 데이터 보여주기**
   - OpenGL 사용? (3d 렌더링이 잘되어있다고함)
+  - Matplotlib
+  - pandas
