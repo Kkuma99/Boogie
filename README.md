@@ -496,3 +496,4 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
      https://github.com/youtalk/youfork
  - **flash**
      https://forums.developer.nvidia.com/t/jetson-tx2-change-kernel-without-full-flash/74029
+        https://docs.nvidia.com/jetson/l4t/index.html#page/Tegra%2520Linux%2520Driver%2520Package%2520Development%2520Guide%2Fkernel_custom.html%23
