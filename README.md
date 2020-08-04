@@ -487,3 +487,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **아이디어
  - 파손과 관련해서 퍼센트 나타내기?
  - 이더넷을 연결하는게 대회 명목과 맞을것으로 예상됨
+ 
+ ---
+ 
+ ## 2020.08.04
+ 
+ - **오픈매니퓰레이터 참고**
+     https://github.com/youtalk/youfork
