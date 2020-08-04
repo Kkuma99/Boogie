@@ -494,3 +494,5 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
  
  - **오픈매니퓰레이터 참고**
      https://github.com/youtalk/youfork
+ - **flash**
+     https://forums.developer.nvidia.com/t/jetson-tx2-change-kernel-without-full-flash/74029
