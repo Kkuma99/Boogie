@@ -452,7 +452,9 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     cv2.destroyAllWindows()
     ```
   - 컨투어와 영역 면적만으로 박스를 detecting할 수 있는가? Harris 코너검출을 함께 이용하는 방법은?
-  
+
+*오픈소스 활용으로 인해 상자와 바코드 인식을 위한 딥러닝 학습이 무의미해짐 → 다른 아이디어 필요*
+
 #### 다음 주 할 일
 - 강민지
   - kernel 문제 확인(ttyACM0 ↔ ttyUSB0 포트 변경)
@@ -484,10 +486,54 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - Matplotlib
   - pandas
 
-- **아이디어
+- **아이디어**
  - 파손과 관련해서 퍼센트 나타내기?
  - 이더넷을 연결하는게 대회 명목과 맞을것으로 예상됨
  
+- **Barcode Detecting**
+  - 코드
+    ```py
+    import pyzbar.pyzbar as pyzbar
+    import cv2
+
+    cap = cv2.VideoCapture(1)
+
+    i = 0
+    while (cap.isOpened()):
+        ret, img = cap.read()
+
+        if not ret:
+            continue
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        decoded = pyzbar.decode(gray)
+
+        for d in decoded:
+            x, y, w, h = d.rect
+
+            barcode_data = d.data.decode("utf-8")   # 바코드 인식 결과
+            barcode_type = d.type
+
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+            text = '%s (%s)' % (barcode_data, barcode_type)
+            cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
+
+        cv2.imshow('img', img)
+
+        key = cv2.waitKey(1)
+        if key == ord('q'):
+            break
+        elif key == ord('s'):
+            i += 1
+            cv2.imwrite('c_%03d.jpg' % i, img)
+
+    cap.release()
+    cv2.destroyAllWindows()
+    ```
+  - `barcode_data` 변수가 스캔한 바코드 정보를 가지고 있음. 이 데이터를 이용하여 배송지를 분류
+  
  ---
  
  ## 2020.08.04
@@ -497,3 +543,49 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
  - **flash**
      https://forums.developer.nvidia.com/t/jetson-tx2-change-kernel-without-full-flash/74029
         https://docs.nvidia.com/jetson/l4t/index.html#page/Tegra%2520Linux%2520Driver%2520Package%2520Development%2520Guide%2Fkernel_custom.html%23
+
+--- 
+## 2020.08.06.
+- **Truck Visualization**
+  - 개인 Windows(Pycharm 이용)에 `pygame`과 `OpenGL` 모듈 설치
+  - 정육면체 화면에 그리기(블로그 참고, 코드 수정함)
+  - 참고: https://m.blog.naver.com/PostView.nhn?blogId=samsjang&logNo=220708189400&proxyReferer=https:%2F%2Fwww.google.com%2F
+  - 코드
+    ```py
+    import pygame
+    from pygame.locals import *
+    from OpenGL.GL import *
+    from OpenGL.GLU import *
+    import time
+
+    # 각 꼭짓점
+    vertices = ((1, -1, -1), (1, 1, -1),
+                (-1, 1, -1), (-1, -1, -1),
+                (1, -1, 1), (1, 1, 1),
+                (-1, -1, 1), (-1, 1, 1))
+
+    # 각 모서리(꼭짓점끼리의 연결)
+    edges = ((0, 1), (0, 3), (0, 4),
+            (2, 1), (2, 3), (2, 7),
+            (6, 3), (6, 4), (6, 7),
+            (5, 1), (5, 4), (5, 7))
+
+    pygame.init()
+    display = (800, 600)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+
+    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)  # 투영 양식
+    glTranslatef(2, -3, -15)      # 바라보는 위치(상하, 좌우, 전후)
+
+    # 육면체를 그림
+    glBegin(GL_LINES)       # OpenGL에게 직선을 그릴 것이라는 것을 알려줌
+    for edge in edges:      # 각 꼭짓점을 직선으로 연결
+        for vertex in edge:
+            glVertex3fv(vertices[vertex])
+    glEnd()                 # OpenGL에게 작업이 끝났음을 알려줌
+
+    pygame.display.flip()       # 화면에 보여줌
+    time.sleep(1)       # 기다림
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # OpenGL에 쓰인 버퍼를 비움
+    ```
+  - 위 코드를 활용하여 트럭 상태 시각화하는 알고리즘 개발 예정
