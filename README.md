@@ -682,14 +682,14 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
     # 화면 표시
     pygame.display.flip()       # 화면에 도형을 보여줌
-    time.sleep(10)       # 1초 기다림
+    time.sleep(1)       # 1초 기다림
 
 
 
     # 자원 해제
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # OpenGL에 쓰인 버퍼를 비움
     ```
-    ---
+---
 ## 2020.08.08.
 - **kernel 수정관련**
   - kernel 중 cp210 과 USB0 관련 부분은 이미 다 체크되어 있었음
@@ -707,3 +707,22 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
    1. 영상 / yolo 아이디어 조금 더 생각 
    2. catkin 수정하고 기본 예제 돌려서 팔 구동 확인 
    3. 터틀봇 원하는 좌표 지정해서 그 위치에 가도록 구동
+
+- **Loading Algorithm**
+  - C로 짜고 있던 코드 Python으로 옮기는 작업 진행
+
+- **Truck Visualization**
+  - Jetson에 PyOpenGL과 pygame 모듈 설치
+  - pygame 설치 오류 - 해결
+    - 해결 이유 정확하지 않음, dependency 관련 문제로 추측
+    - https://www.pygame.org/wiki/CompileUbuntu?parent=
+    - `#install dependencies` 부분 참고
+  - 아래 코드 실행 시 오류
+    ```py
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    ```
+    - 오류 내용
+      ```
+
+      ```
+    - OPENGL 플래그에서 문제 발생, pygame창에 OpenGL 툴을 불러오지 못함, 원인 모름
