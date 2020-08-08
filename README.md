@@ -723,6 +723,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     ```
     - 오류 내용
       ```
+      Fatal Python error: (pygame parachute) Segmentation Fault
 
+      Current thread 0x0000007fa36ff000 (most recent call first):
+        File "test.py", line 45 in <module>
+      Aborted (core dumped)
       ```
     - OPENGL 플래그에서 문제 발생, pygame창에 OpenGL 툴을 불러오지 못함, 원인 모름
