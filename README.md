@@ -690,7 +690,15 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # OpenGL에 쓰인 버퍼를 비움
     ```
     ---
-## 2020.08.0.
+## 2020.08.08.
+- **kernel 수정관련**
+  - kernel 중 cp210 과 USB0 관련 부분은 이미 다 체크되어 있었음
+  - rplidar를 따로 연결했을 때 dev/tty*로 변경되는 사항이 없음
+  - 연결 커넥터 문제는 아니였음
+  - ping은 문제가 없음
+  - dmesg를 했을 때 rplidar를 뺐다가 켜는 경우에는 USB0 connected 및 CP210x converted 가 확인되지만 여전히 dev/ttyUSB* 로는 확인되는 것이 없음
+  - 현재 우선은 젯슨에서 영상을 받을 만한 것이 없으므로 binary data를 라즈베리 파이에 전달할 방법을 찾는 것이 우선
+
 - **본체**
   - 젯슨을 굳이 영상을 라즈베리에 넘길 필요성 없어짐 (아이디어 필요함)
   - 나중에 시각화 할 때를 위해서라고 데이터 어떻게 파이에 넘길지 필요
