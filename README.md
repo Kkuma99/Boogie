@@ -730,3 +730,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
       Aborted (core dumped)
       ```
     - OPENGL 플래그에서 문제 발생, pygame창에 OpenGL 툴을 불러오지 못함, 원인 모름
+    
+---
+## 2020.08.12.
+- **매니퓰레이터 문의**
+  - 답변 준대로 했는데 똑같은 에러남
