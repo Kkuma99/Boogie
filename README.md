@@ -738,6 +738,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 ## 2020.08.13
-
-https://www.jetsonhacks.com/2018/05/29/gpu-activity-monitor-nvidia-jetson-tx-dev-kit/
-https://eungbean.github.io/2018/08/23/gpu-monitoring-tool-ubuntu/
+- **Truck Visualization**
+  - Jetson에 GPU 전용 VRAM이 없어서 메모리 초과 의심 → 아닌듯함
+    - GPU 상태를 모니터링하는 툴을 설치하여 코드를 돌려 보았으나 특이한 변화 없음
+      - https://www.jetsonhacks.com/2018/05/29/gpu-activity-monitor-nvidia-jetson-tx-dev-kit/
+      - https://eungbean.github.io/2018/08/23/gpu-monitoring-tool-ubuntu/
