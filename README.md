@@ -735,3 +735,9 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ## 2020.08.12.
 - **매니퓰레이터 문의**
   - 답변 준대로 했는데 똑같은 에러남
+
+---
+## 2020.08.13
+
+https://www.jetsonhacks.com/2018/05/29/gpu-activity-monitor-nvidia-jetson-tx-dev-kit/
+https://eungbean.github.io/2018/08/23/gpu-monitoring-tool-ubuntu/
