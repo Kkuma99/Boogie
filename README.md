@@ -737,9 +737,55 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 답변 준대로 했는데 똑같은 에러남
 
 ---
-## 2020.08.13
+## 2020.08.13.
 - **Truck Visualization**
   - Jetson에 GPU 전용 VRAM이 없어서 메모리 초과 의심 → 아닌듯함
     - GPU 상태를 모니터링하는 툴을 설치하여 코드를 돌려 보았으나 특이한 변화 없음
       - https://www.jetsonhacks.com/2018/05/29/gpu-activity-monitor-nvidia-jetson-tx-dev-kit/
       - https://eungbean.github.io/2018/08/23/gpu-monitoring-tool-ubuntu/
+
+---
+## 2020.08.14.
+- **Truck Visualization**
+  - OpenGL과 pygame 이용하지 않는 방법 시도
+  - matplotlib 이용 → Ubuntu에서 실행 되는지 확인 필요
+  - 참고
+    - https://codereview.stackovernet.com/ko/q/38653
+    - https://stackoverflow.com/questions/18853563/how-can-i-paint-the-faces-of-a-cube
+    - https://matplotlib.org/3.1.0/gallery/color/named_colors.html
+  - 수정하여 작성한 테스트용 코드
+    ```py
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from itertools import product
+    from matplotlib.patches import Rectangle
+    import mpl_toolkits.mplot3d.art3d as art3d
+
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.set_aspect('equal')
+
+
+    # draw cube
+    def rect_prism(x_range, y_range, z_range):
+
+          yy, zz = np.meshgrid(y_range, z_range)
+          ax.plot_wireframe(x_range[0], yy, zz, color="black")
+          ax.plot_wireframe(x_range[1], yy, zz, color="black")
+
+          xx, zz = np.meshgrid(x_range, z_range)
+          ax.plot_wireframe(xx, y_range[0], zz, color="black")
+          ax.plot_wireframe(xx, y_range[1], zz, color="black")
+
+
+    rect_prism(np.array([0, 45]), np.array([0, 20]), np.array([0, 20]))
+
+    colors = 'gold'
+    for i, (z, zdir) in enumerate(product([0, 2], ['x', 'y', 'z'])):
+        side = Rectangle((0, 0), 2, 2, fill=False, edgecolor=colors)    # https://www.delftstack.com/ko/howto/matplotlib/how-to-draw-rectangle-on-image-in-matplotlib/
+        ax.add_patch(side)
+        art3d.pathpatch_2d_to_3d(side, z=z, zdir=zdir)
+
+    plt.show()
+    ```
