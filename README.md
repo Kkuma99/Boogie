@@ -789,3 +789,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
     plt.show()
     ```
+---
+## 2020.08.15.
+- **Manipulator**
+  - catkin_make는 성공
+  - https://emanual.robotis.com/docs/en/platform/turtlebot3/manipulation/
+  - https://answers.ros.org/question/254084/gazebo-could-not-load-controller-jointtrajectorycontroller-does-not-exist-mastering-ros-chapter-10/ 설치했음
+  
