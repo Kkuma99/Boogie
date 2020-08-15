@@ -795,4 +795,5 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - catkin_make는 성공
   - https://emanual.robotis.com/docs/en/platform/turtlebot3/manipulation/
   - https://answers.ros.org/question/254084/gazebo-could-not-load-controller-jointtrajectorycontroller-does-not-exist-mastering-ros-chapter-10/ 설치했음
-  
+  - https://emanual.robotis.com/docs/en/platform/turtlebot3/manipulation/ 에서 현재 인식되는 오픈 매니퓰레이터가 실제로 움직이는 것 빼고는 다 구동함 ( 
+  https://www.youtube.com/watch?v=wmZQoTdtioY : lidar
