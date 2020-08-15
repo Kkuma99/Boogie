@@ -797,5 +797,16 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - https://answers.ros.org/question/254084/gazebo-could-not-load-controller-jointtrajectorycontroller-does-not-exist-mastering-ros-chapter-10/ 설치했음
   - https://emanual.robotis.com/docs/en/platform/turtlebot3/manipulation/ 에서 현재 인식되는 오픈 매니퓰레이터가 실제로 움직이는 것 빼고는 다 구동함 ( 
   https://www.youtube.com/watch?v=wmZQoTdtioY : lidar
+
+-**Box Loading**
+  - 적재 알고리즘 개발 진행
   
-  다음주 할일: 매니퓰레이터 실제 구동 / 카메라 달기
+#### 할 일 
+  - 매니퓰레이터 실제 구동 / 카메라 달기
+  - 박스 3D 프린트(파랑, 초록, 보라 등의 색으로) 후 OpenCV 코드 테스트
+  - 적재 알고리즘 개발
+  - Jetson, RPi 간 데이터 송수신 방법 모색
+    - python 코드 상에서 정보를 실시간으로 서버 또는 유선으로 송수신
+  - Jetson 백업 방법 모색
+  - 카메라 포커싱 문제 해결
+    - 오토포커싱 카메라 찾아보기
