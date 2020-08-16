@@ -810,3 +810,9 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - Jetson 백업 방법 모색
   - 카메라 포커싱 문제 해결
     - 오토포커싱 카메라 찾아보기
+    
+---
+2020.08.17.
+- **Box Loading**
+  - 주석 작성
+  - 알고리즘 개발 진행
