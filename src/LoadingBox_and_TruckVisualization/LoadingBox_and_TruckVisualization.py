@@ -18,7 +18,7 @@ LOCAL_B = 1
 LOCAL_C = 2
 
 ## Size of truck(1cm unit)
-TRUCK_W = 10    # y
+TRUCK_W = 20    # y
 TRUCK_L = 30    # x
 TRUCK_H = 10    # z
 
@@ -109,10 +109,10 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
                     else:   # 1 또는 2이면(막혀있는 공간이면)
                         if measureMode == 1:    # 측정 모드였다면
                             measureMode = 0     # 측정 모드 해제
-                if min_L != 0:  # 해당 줄에 빈 공간이 있었다면
+                if count_W != 0:  # 해당 줄에 빈 공간이 있었다면
                     break   # j에 대한 for 문 탈출
-            # print(pos_X, pos_Y, pos_Z)
-            # print(count_W)
+            print(pos_X, pos_Y, pos_Z)
+            print(count_W)
             # 적재할 상자 선택
             for j in range(NUM_BOX[i]):
                 if check[i][j] == 0 and inputBox[i][j]['w'] <= count_W:     # 아직 적재하지 않은 상자이고, 너비가 count_W 이하면
@@ -120,16 +120,18 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
                         # 적재할 상자의 아래가 막혀있는지 확인
                         for x in range(inputBox[i][j]['l']):
                             for y in range(inputBox[i][j]['w']):
-                                if truck[pos_X+inputBox[i][j]['l']][pos_Y+inputBox[i][j]['w']][pos_Z-1] == 0:
+                                if truck[pos_X+x][pos_Y+y][pos_Z-1] == 0:
                                     cannot_load = 1
                                     break
                                 # 해당 위치에 상자를 적재했을 때 트럭 높이를 넘지 않는지 확인
-                                k = 0
-                                while truck[pos_X][pos_Y][k] != 0:
+                                count_H = 0
+                                while truck[pos_X][pos_Y][count_H] != 0:
                                     count_H += 1
                                 if count_H+inputBox[i][j]['h'] <= TRUCK_H:
                                     boxIndex = j  # 상자 인덱스 저장
                                     max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+                                else:
+                                    cannot_load = 1
                             if cannot_load == 1:
                                 break
                         cannot_load = 0
@@ -138,7 +140,7 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
                 # 2로 채움
                 for y in range(count_W):
                     for z in range(BOX_H):
-                        truck[pos_X][y][z] = 2
+                        truck[pos_X][pos_Y+y][pos_Z+z] = 2
             else:   # 해당 공간에 적재할 수 있는 상자가 있다면
                 # 1로 채움
                 for x in range(inputBox[i][boxIndex]['l']):
