@@ -847,3 +847,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **Loading Box**
   - 알고리즘 개발 진행
     - 적재할 수 있는 상자의 조건 추가(아래가 비어있지 않을 때, 적재했을 때 높이가 트럭 높이를 넘지 않을 때)
+
+---
+## 2020.08.25.
+- **Loading Box**
+  - 알고리즘 개발 진행
