@@ -1,3 +1,5 @@
+# 이 코드의 input으로는 정상적으로 작동함
+
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import product
