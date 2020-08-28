@@ -1,5 +1,4 @@
-# 이 코드의 input으로는 정상적으로 작동함
-
+# 길이 제한에 대한 코드 수정 필요
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import product
@@ -23,7 +22,7 @@ LOCAL_C = 2
 ## Size of truck(1cm unit)
 TRUCK_L = 50    # x
 TRUCK_W = 25    # y
-TRUCK_H = 25    # z
+TRUCK_H = 30    # z
 
 ## Boxes to load
 inputBox = {}
@@ -120,7 +119,7 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
         # 한 층에 각 지역에 할당된 길이만큼 적재되었거나 트럭 길이 끝까지 적재된 경우 층수 증가
         if endOfL >= TRUCK_L * (sum_num_box / sum(NUM_BOX)) or endOfL >= TRUCK_L:
             floor += 1
-            print('increase floor')
+            print('increase the floor: ', floor)
 
         # 상자를 적재할 위치 계산
         min_L = TRUCK_L     # 최소값을 찾기 위해 큰 값으로 초기화
@@ -172,10 +171,33 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
                     if count_H+inputBox[i][j]['h'] <= TRUCK_H:
                         boxIndex = j  # 상자 인덱스 저장
                         max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+                        # # 6. 해당 위치에 상자를 적재했을 때 트럭 길이를 넘지 않는지 확인
+                        # count_L = 0
+                        # while truck[count_L][pos_Y][pos_Z] != 0:
+                        #     count_L += 1
+                        # if count_L * inputBox[i][j]['l'] <= TRUCK_L:
+                        #     boxIndex = j  # 상자 인덱스 저장
+                        #     max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+                        # else:
+                        #     continue
                     else:
                         continue
 
-        # 상자 적재 또는 빈 공간 채우기
+        # # 상자 적재 또는 빈 공간 채우기
+        # if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
+        #     # 2로 채움
+        #     truck[pos_X][pos_Y:pos_Y + count_W][pos_Z:pos_Z + BOX_H] = 2
+        # else:  # 해당 공간에 적재할 수 있는 상자가 있다면 상자 적재
+        #     l_len = inputBox[i][boxIndex]['l']
+        #     w_len = inputBox[i][boxIndex]['w']
+        #     h_len = inputBox[i][boxIndex]['h']
+        #     if i == 0:
+        #         truck[pos_X:pos_X + l_len][pos_Y:pos_Y + w_len][pos_Z:pos_Z + h_len] = 3
+        #     elif i == 1:
+        #         truck[pos_X:pos_X + l_len][pos_Y:pos_Y + w_len][pos_Z:pos_Z + h_len] = 4
+        #     else:
+        #         truck[pos_X:pos_X + l_len][pos_Y:pos_Y + w_len][pos_Z:pos_Z + h_len] = 5
+
         if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
             # 2로 채움
             for y in range(count_W):
@@ -196,7 +218,6 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
             finish[i] += 1   # 적재 완료된 상자 수 갱신
             check[i][boxIndex] = 1  # 적재 완료된 상자 체크
             ##### display
-        max_box_W = 0
         print('check: ', check)
         print('finish: ', finish)
         print('-----------------------------')
