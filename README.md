@@ -1,4 +1,4 @@
-# Boogie the Guider 정리 블로그
+# ROGIE_BOOGIE 정리 블로그
 
 ## 개요
 - 프로젝트명: Boogie The Guider
