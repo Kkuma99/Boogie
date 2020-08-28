@@ -1,4 +1,4 @@
-# ROGIE_BOOGIE 정리 블로그
+# LOGI_BOOGIE 정리 블로그
 
 ## 개요
 - 프로젝트명: ROGIE_BOOGIE
@@ -873,3 +873,8 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 1. ar마커 적용해보기 (캠 설치 및 코드 실행) / 관련 코드보고 원리 확인 (만약 바코드와 통일할 수 있으면 통일하기)
     - 2. 마커를 읽어서 특정 위치로 보내도록 코드 생성
     - 3. 재읽기 코드 생성
+- **Loading Box**
+  - 알고리즘 개발 진행
+    - 트럭 높이, 길이 제한에 대한 코드 추가 필요(시도하다가 끝남)
+- **Barcode Scanning**
+  - tegra 관련 코드 추가 없이도 외장 USB카메라 작동함
