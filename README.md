@@ -1,10 +1,10 @@
 # ROGIE_BOOGIE 정리 블로그
 
 ## 개요
-- 프로젝트명: Boogie The Guider
+- 프로젝트명: ROGIE_BOOGIE
 - 참여자: 강민지(wbclair7@konkuk.ac.kr), 권미경(kmk3942@konkuk.ac.kr) [2명]
 - 프로젝트 일자: 2019년 12월 ~ 진행중
-- 주제: Turtlebot3 Waffle과 Open Manipulator를 이용한 건물 안내로봇 제작
+- 주제: Turtlebot3 Waffle과 Open Manipulator를 이용한 로봇 제작
 
 현재 이 블로그는 연구상황 정리, 참고 자료 정리와 더불어 다른 사람들이 진행 시 겪을 수 있는 오류에 보탬이 되고자 개설하게 되었다. 진행 상황과 더불어 참고한 문헌 혹은 참고할만한 문헌, 에러 해결 방법 등에 대해서 올릴 예정이다.
 
