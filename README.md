@@ -902,3 +902,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ```
 
 </details>
+
+- **Loading Box**
+  - 알고리즘 개발 진행
+    - 트럭 높이, 길이 제한에 대한 코드 추가 완료
