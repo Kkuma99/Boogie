@@ -878,3 +878,25 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 트럭 높이, 길이 제한에 대한 코드 추가 필요(시도하다가 끝남)
 - **Barcode Scanning**
   - tegra 관련 코드 추가 없이도 외장 USB카메라 작동함
+
+---
+## 2020.08.30
+- **AR marker관련 정리**
+<details>
+<summary><span style="color:green">📝ar 마커 관련 정리</span></summary>
+참고 사이트: https://github.com/greattoe/ros_tutorial_kr/blob/master/rospy/ar_1_ar_track_alvar.md
+<br>
+  1. 마커에는 tf와 pose가 있다.
+  2. 기본 launch 내용에는 marker 한변의 길이를 넣어준다 (나머지는 default로 사용)
+  3. 마커는 정사각형이여야함
+  4. 마커의 정보: header + markers -> 자신이 몇번 마커인지, `position.x,y,z`, 축
+<br>
+기본 `home service challenge`: 각각의 publish가 필요함 / scenario data를 저장해줄 때 이름, marker의 이름, position등을 저장해줌 (map에 대한 기본적인 정보가 필요하다 생각이 든다)-> 기본 simulator에 대한 이해 진행 후 현재 가지고 있는 맵에 맞도록 구성 짜보기
+  - http://wiki.ros.org/ar_track_alvar
+<br>
+ROS에서 제공하는 기본 마커 파일: http://wiki.ros.org/ar_track_alvar?action=AttachFile&do=view&target=markers0to8.png
+<br>
+기본 구동 예제: https://www.youtube.com/watch?v=sV7vOTvUCx8
+<br>
+마커 생성: https://webnautes.tistory.com/1040
+</details>
