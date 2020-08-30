@@ -881,7 +881,6 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 ## 2020.08.30
-- **AR marker관련 정리**
 <details>
 <summary><span style="color:green">📝ar 마커 관련 정리</span></summary>
   
