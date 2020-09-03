@@ -865,7 +865,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 트럭 높이 제한에 대한 코드 추가 필요
   - random input으로 테스트 필요
   
-  ---
+---
 ## 2020.08.28.
 - **open manipulator**
   - 문제가 되었던 부분은 오픈매니퓰레이터의 혼이 조정이 안되었던 것이여서 현재는 조작에 큰 문제가 없음
@@ -906,3 +906,11 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **Loading Box**
   - 알고리즘 개발 진행
     - 트럭 높이, 길이 제한에 대한 코드 추가 완료
+
+---
+## 2020.09.03.
+- **Loading Box and Truck Visualization**
+  - 적재 알고리즘과 matplotlib를 활용한 시각화 코드 병합
+  - 최적화 필요
+    - 뒤로 갈수록 속도가 느려짐 → plot할 것이 점점 많아져서 그런 것으로 보임
+    - for문을 벡터연산으로 바꾸어 속도 향상 필요
