@@ -88,9 +88,6 @@ while True:
             print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력
             print(barcode_data)  # 바코드 인식 결과 출력
 
-    # 화면에 파란색 사각형 그리기
-    cv2.rectangle(img_color, (50, 50), (590, 430), (255, 0, 0), 1)
-
     # Show original picture with contour
     cv2.imshow('image', img_color)
 
