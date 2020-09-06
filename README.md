@@ -914,3 +914,12 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 최적화 필요
     - 뒤로 갈수록 속도가 느려짐 → plot할 것이 점점 많아져서 그런 것으로 보임
     - for문을 벡터연산으로 바꾸어 속도 향상 필요
+
+---
+## 2020.09.06.
+- **BoxDetection and SizeMeasuring + BarcodeScanning**
+  - 상자인식&크기측정 코드와 바코드스캔 코드 병합
+    - 상자 영역의 x축 방향 중심점이 화면의 중앙(315~325)에 올 때 크기를 측정하고 바코드를 스캔하도록 함
+    
+- **카메라 구매**
+  - 기존에 쓰던 'Logitech C270' 모델이 오토포커스 기능을 지원하지 않아 '앱코 APC930 FHD' 구매
