@@ -2,11 +2,13 @@ import numpy as np
 import pyzbar.pyzbar as pyzbar
 import cv2
 
+
 # 트랙바를 위한 dummy 함수
 def nothing(x):
     pass
 
-# Read image
+
+# Read image(640*480)
 cap = cv2.VideoCapture(1)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
@@ -17,11 +19,11 @@ text = "NONE"
 x = y = w = h = 0
 barcode_data = 0
 
-while (True):
+while True:
     ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
 
     # 캡처에 실패할 경우 다시 loop의 첫 줄부터 수행하도록 함
-    if ret == False:
+    if not ret:
         continue
 
     # Gaussian blur
@@ -29,33 +31,14 @@ while (True):
 
     # Convert to graysscale
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-
-
-    # 바코드 인식
-    #########################
     gray_barcode = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    decoded = pyzbar.decode(gray_barcode)
-    for d in decoded:
-        x, y, w, h = d.rect
-
-        barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
-        barcode_type = d.type
-
-        cv2.rectangle(img_color, (x, y), (x + w, y + h), (0, 0, 255), 2)
-
-        text = '%s (%s)' % (barcode_data, barcode_type)
-        # 화면에 바코드 정보 띄우기
-        cv2.putText(img_color, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
-    ##########################
-
-
 
     # Autocalculate the thresholding level
     threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
 
     # Threshold
     low = cv2.getTrackbarPos('threshold', 'image')  # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)    # 트랙바의 threshold값 받아옴
+    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 트랙바의 threshold값 받아옴
     # retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 새천년관 1006호에서 threshold: 142
 
     # Find contours
@@ -83,17 +66,33 @@ while (True):
     box = np.int0(box)
     img_color = cv2.drawContours(img_color, [box], 0, (0, 0, 255), 2)
 
+    # 상자가 화면의 중심에 왔을 때 크기 측정과 바코드 스캔
+    center = box[1][0] + (box[3][0] - box[1][0]) / 2
+    print(center)
+    if 315 <= center <= 325:
+        decoded = pyzbar.decode(gray_barcode)
+        for d in decoded:
+            x, y, w, h = d.rect
+
+            barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
+            barcode_type = d.type
+
+            cv2.rectangle(img_color, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+            text = '%s (%s)' % (barcode_data, barcode_type)
+            # 화면에 바코드 정보 띄우기
+            cv2.putText(img_color, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
+
+            box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
+            box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
+            print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력
+            print(barcode_data)  # 바코드 인식 결과 출력
+
     # 화면에 파란색 사각형 그리기
     cv2.rectangle(img_color, (50, 50), (590, 430), (255, 0, 0), 1)
 
     # Show original picture with contour
     cv2.imshow('image', img_color)
-
-    if cv2.waitKey(1) & 0xFF == 32: # 스페이스바를 누르면 상자의 픽셀 크기 측정
-        box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
-        box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
-        print('Size of box: ', box_w_pixel, box_l_pixel)
-        print(barcode_data)
 
     if cv2.waitKey(1) & 0xFF == 27:  # 1초 단위로 update되며, esc키를 누르면 탈출하여 종료
         break
