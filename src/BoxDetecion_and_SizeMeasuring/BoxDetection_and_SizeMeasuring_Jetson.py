@@ -31,8 +31,8 @@ while (True):
 
     # Threshold
     low = cv2.getTrackbarPos('threshold', 'image')  # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)    # 트랙바의 threshold값 받아옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 새천년관 1006호에서 threshold: 142
+    retval, bin = cv2.threshold(gray, low, threshold, cv2.THRESH_BINARY)    # 트랙바의 threshold값 받아옴
+    # retval, bin = cv2.threshold(gray, 107, 255, cv2.THRESH_BINARY)
 
     # Find contours
     val, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
