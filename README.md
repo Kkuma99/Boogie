@@ -923,3 +923,12 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     
 - **카메라 구매**
   - 기존에 쓰던 'Logitech C270' 모델이 오토포커스 기능을 지원하지 않아 '앱코 APC930 FHD' 구매
+
+---
+## 2020.09.09.
+- **BoxDetection & SizeMeasuring & BarcodeScanning + LoadingBox & TruckVisualization**
+  - 모든 코드 병합(초안): MergeAll.py
+    - 상자가 모두 지나간 후 카메라 캡처를 종료하는 조건 필요
+      - time.time() 활용?
+    - 실제 환경을 구성하여 상자의 픽셀 크기와 실제 크기의 비율 적용 필요
+    - Jetson에서 구동 가능한지 확인 필요
