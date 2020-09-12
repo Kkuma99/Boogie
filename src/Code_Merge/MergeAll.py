@@ -66,7 +66,10 @@ finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장�
 
 
 # Read image(640*480)
-cap = cv2.VideoCapture(0)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
+cap = cv2.VideoCapture(1)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
+cap.set(cv2.CAP_PROP_FPS, 30)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
@@ -99,7 +102,8 @@ while True:
     # retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 새천년관 1006호에서 threshold: 142
 
     # Find contours
-    contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    val, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) # Jetson
+    # contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) # Window
 
     # Sort out the biggest contour (biggest area)
     max_area = 0
@@ -126,7 +130,7 @@ while True:
     # 상자가 화면의 중심에 왔을 때 크기 측정과 바코드 스캔
     center = box[1][0] + (box[3][0] - box[1][0]) / 2
     # print(center)
-    if 315 <= center <= 325:
+    if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
             x, y, w, h = d.rect
