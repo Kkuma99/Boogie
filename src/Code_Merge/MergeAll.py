@@ -67,9 +67,9 @@ finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장�
 
 # Read image(640*480)
 cap = cv2.VideoCapture(1)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
-cap.set(cv2.CAP_PROP_FPS, 30)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FPS, 30) # FPS(프레임속도) 30으로 설정
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 640으로 설정
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 프레임 높이 480으로 설정
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
@@ -127,10 +127,10 @@ while True:
     box = np.int0(box)
     img_color = cv2.drawContours(img_color, [box], 0, (0, 0, 255), 2)
 
-    # 상자가 화면의 중심에 왔을 때 크기 측정과 바코드 스캔
-    center = box[1][0] + (box[3][0] - box[1][0]) / 2
+    # 상자가 화면의 중앙에 왔을 때 크기 측정과 바코드 스캔
+    center = box[1][0] + (box[3][0] - box[1][0]) / 2    # 상자 중심 y좌표
     # print(center)
-    if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:
+    if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:    # 상자가 화면의 중앙 부근에 왔을 때
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
             x, y, w, h = d.rect
@@ -153,7 +153,7 @@ while True:
             #print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력
             #print(barcode_data)  # 바코드 인식 결과 출력
 
-            if not inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])]:   # 중복되는 데이터가 없다면면
+            if not inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])]:   # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': BOX_H}
                 NUM_BOX[ord(barcode_data[0])-65] += 1
 
