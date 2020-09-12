@@ -11,6 +11,8 @@ def nothing(x):
 # Read image(640*480)
 cap = cv2.VideoCapture(1)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
 cap.set(cv2.CAP_PROP_FPS, 30)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
@@ -22,7 +24,7 @@ barcode_data = 0
 
 while True:
     ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
-    img_color = cv2.resize(img_color, (640, 480))
+    #img_color = cv2.resize(img_color, (640, 480))
 
     # 캡처에 실패할 경우 다시 loop의 첫 줄부터 수행하도록 함
     if not ret:
