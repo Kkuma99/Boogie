@@ -77,9 +77,9 @@ while True:
     if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:
         box_w_pixel = np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2)  # 상자의 픽셀 너비
         box_l_pixel = np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2)  # 상자의 픽셀 길이
-        box_w = int(round(box_w_pixel/40.8, 0))
-        box_l = int(round(box_l_pixel/40.8, 0))
-        print('Size of box: ', box_w, box_l)  # 상자의 픽셀 크기 출력
+        box_w = int(round(box_w_pixel/40.8, 0)) # 상자의 실제 너비 계산
+        box_l = int(round(box_l_pixel/40.8, 0)) # 상자의 실제 길이 계산
+        print('Size of box: ', box_w, box_l)  # 상자의 실제 크기 출력
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
             x, y, w, h = d.rect
