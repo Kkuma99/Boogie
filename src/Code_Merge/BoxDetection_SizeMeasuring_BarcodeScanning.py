@@ -62,22 +62,24 @@ while True:
             max_index = index
 
     # Draw the raw contours
-    cv2.drawContours(img_color, contours, max_index, (0, 255, 0), 3)
+    cv2.drawContours(img_color, contours, max_index, (0, 255, 0), 2)
 
     # Draw a rotated rectangle of the minimum area enclosing our box (red)
     cnt = contours[max_index]
     rect = cv2.minAreaRect(cnt)
     box = cv2.boxPoints(rect)
     box = np.int0(box)
-    img_color = cv2.drawContours(img_color, [box], 0, (0, 0, 255), 2)
+    img_color = cv2.drawContours(img_color, [box], 0, (0, 0, 255), 1)
 
     # 상자가 화면의 중심에 왔을 때 크기 측정과 바코드 스캔
     center = box[1][0] + (box[3][0] - box[1][0]) / 2
     print(center)
     if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:
-        box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
-        box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
-        print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력
+        box_w_pixel = np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2)  # 상자의 픽셀 너비
+        box_l_pixel = np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2)  # 상자의 픽셀 길이
+        box_w = int(round(box_w_pixel/40.8, 0))
+        box_l = int(round(box_l_pixel/40.8, 0))
+        print('Size of box: ', box_w, box_l)  # 상자의 픽셀 크기 출력
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
             x, y, w, h = d.rect
