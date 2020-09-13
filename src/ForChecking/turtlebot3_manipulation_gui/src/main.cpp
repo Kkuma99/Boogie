@@ -1,21 +1,3 @@
-/*******************************************************************************
-* Copyright 2020 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
-
-/* Authors: Ryan Shim */
-
 /*****************************************************************************
 ** Includes
 *****************************************************************************/
@@ -27,6 +9,10 @@
 /*****************************************************************************
 ** Main
 *****************************************************************************/
+/* 박스 치기 위한 코드 */
+// 1번 데이터 주소 받기 (우선은 사용자에게 입력 받는 것으로 주소지 3개)
+// 2번 입력받은 데이터를 3가지 if문으로 처리하기
+// 조건을 받으면 클래스 가져와서 각도 조절 해서 치고 원래 포즈로 돌아가도록
 
 int main(int argc, char **argv) {
 
@@ -35,7 +21,7 @@ int main(int argc, char **argv) {
     **********************/
     QApplication app(argc, argv);
     turtlebot3_manipulation_gui::MainWindow w(argc,argv);
-    w.show();
+    w.show(); # 보여주고 프린트 되는 것 확인하기
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
     int result = app.exec();
 
