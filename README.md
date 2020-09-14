@@ -990,3 +990,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 민지: AR마커 로보티즈 문의, C++ 공부, GUI 뜯어보기 / 치는 것 완료하기
   - 9/17
     - 미경: 데이터 송수신 공부 및 적용
+---
+## 2020.09.14
+- **manipulator**
+  - 1차적으로 큰 틀을 짰음 - 빌드는 됨
+  - 내일 할일:
+    - 다른 클래스 (home_pose_clicked 등을 통하여 행동 지침 코드 짜기)
+    - ar marker 답이 없으므로 새로 질문 올리기
