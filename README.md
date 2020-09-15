@@ -997,3 +997,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 내일 할일:
     - 다른 클래스 (home_pose_clicked 등을 통하여 행동 지침 코드 짜기)
     - ar marker 답이 없으므로 새로 질문 올리기
+---
+---
+## 2020.09.15
+- **manipulator**
+  - gui 버튼을 누른것처럼 조정할 수 있는 방법?
+  - 목요일에 각 함수들에서 value() 가 갈 때 어떠한 값이 가는지 확인을 해보기 ( 만약 main_window.cpp을 사용 불가능 하다면 qnode.cpp에 직접 value 값을 지정해주는 방식을 사용해보는 것으로 생각하기)
+  - 로스에서 받은 데이터 바로 처리하도록 하는 방식 
