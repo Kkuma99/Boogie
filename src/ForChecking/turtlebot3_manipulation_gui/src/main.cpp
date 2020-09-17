@@ -38,10 +38,11 @@ int main(int argc, char **argv) {
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
     int result = app.exec();
 
+	turtlebot3_manipulation_gui::MainWindow::on_btn_timer_start_clicked();
     if(strcmp(n,"a")==0){
         // 행동 진행 
-	w.on_btn_init_pose_clicked();
-	std::cout << "a\n";
+	turtlebot3_manipulation_gui::MainWindow::on_btn_init_pose_clicked();
+	    std::cout << "a\n";
     }
     else if(strcmp(n,"b")==0){
 	//행동
