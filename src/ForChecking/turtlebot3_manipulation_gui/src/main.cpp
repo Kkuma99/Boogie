@@ -34,12 +34,13 @@ int main(int argc, char **argv) {
     char n[1];
     std::cout << "주소지는 a/b/c/: ";
     std::cin >> n;
-    w.show();
+    //w.show();
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
     int result = app.exec();
 
     if(strcmp(n,"a")==0){
         // 행동 진행 
+	w.on_btn_init_pose_clicked();
 	std::cout << "a\n";
     }
     else if(strcmp(n,"b")==0){
