@@ -32,17 +32,19 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     turtlebot3_manipulation_gui::MainWindow w(argc,argv);
     char n[1];
+    w.show();
+    w.on_btn_timer_start_clicked();
+    app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+    //int result = app.exec();
+
     std::cout << "주소지는 a/b/c/: ";
     std::cin >> n;
     //w.show();
-    app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-    int result = app.exec();
-
-	turtlebot3_manipulation_gui::MainWindow::on_btn_timer_start_clicked();
+    //w.on_btn_timer_start_clicked();
     if(strcmp(n,"a")==0){
         // 행동 진행 
-	turtlebot3_manipulation_gui::MainWindow::on_btn_init_pose_clicked();
-	    std::cout << "a\n";
+	w.on_btn_init_pose_clicked();
+	std::cout << "a\n";
     }
     else if(strcmp(n,"b")==0){
 	//행동
@@ -59,6 +61,7 @@ int main(int argc, char **argv) {
     //turtlebot3_manipulation_gui::MainWindow w(argc,argv);
     //w.show();
     //app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-    //int result = app.exec();
+    int result = app.exec();
     return result;
 }
+
