@@ -1015,3 +1015,13 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 ## 2020.09.17.
+-**roscore**
+  - 끌 때 killall -9 roscore, killall -9 rosmaster
+- **gui code**
+  - 코드 일부 완성
+  - 함수만 이제 변경해서 내려가서 치고 돌아오는 형식으로 바꾸기
+  - 해야할일:
+    - 코드 정리 주소지 main.cpp
+    - 주소지 데이터 받고 계속 돌리는 걸로 코드 바꾸기
+    - 통신 젯슨에서 해보기
+    - port 22
