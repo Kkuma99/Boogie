@@ -73,7 +73,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 프레임 높이 480으로 설정
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
-cv2.setTrackbarPos('threshold', 'image', 127)  # 트랙바의 초기값 지정
+cv2.setTrackbarPos('threshold', 'image', 70)  # 트랙바의 초기값 지정
 
 text = "NONE"
 x = y = w = h = 0
@@ -148,12 +148,12 @@ while True:
             box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
             box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
             # 박스 실제크기 계산###################################비례식 이용
-            box_l = box_l_pixel
-            box_w = box_w_pixel
-            #print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력
+            box_w = int(round(box_w_pixel/40.8, 0))
+            box_l = int(round(box_l_pixel/40.8, 0))
+            #print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력2
             #print(barcode_data)  # 바코드 인식 결과 출력
 
-            if not inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])]:   # 중복되는 데이터가 없다면
+            if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0])-65]:   # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': BOX_H}
                 NUM_BOX[ord(barcode_data[0])-65] += 1
 
@@ -173,6 +173,7 @@ cv2.destroyAllWindows()
 for i in range(0, NUM_LOCAL):
     for j in range(0, NUM_BOX[i]):
         check[i].append(0)
+
 
 # Define for Truck Visualization
 ##
@@ -204,12 +205,14 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
     sum_num_box += NUM_BOX[i]   # 앞 지역부터 상자의 개수를 더함
 
     while True:
+        print('finish:',finish[i],'NUM_BOX:',NUM_BOX[i],'order:',i)
         if finish[i] == NUM_BOX[i]:     # 해당 지역 상자들의 적재가 끝나기 전까지 반복
             break
 
         # endOfL 계산
         endOfL = TRUCK_L
         for j in range(TRUCK_W):    # 너비 방향으로 검사
+
             count_L = 0
             while truck[count_L][j][floor * BOX_H] != 0:    # 빈 공간이 나올때까지 반복
                 if count_L == TRUCK_L-1:    # truck의 인덱스 끝까지 가면 탈출
@@ -261,33 +264,34 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
         max_box_W = 0
         for j in range(NUM_BOX[i]):
             cannot_load = 0
-            if check[i][j] == 0 and inputBox[i][j]['w'] <= count_W:     # 1. 아직 적재하지 않은 상자이고, 너비가 count_W 이하면
-                if inputBox[i][j]['w'] > max_box_W:     # 2. 최대 너비를 가진 상자를 찾음
-                    # 3. 해당 위치에 상자를 적재했을 때 트럭 높이를 넘지 않는지 확인
-                    count_H = 0     # 해당 위치에 상자 적재 전 높이
-                    while truck[pos_X][pos_Y][count_H] != 0:
-                        count_H += 1
-                    if count_H+inputBox[i][j]['h'] > TRUCK_H:
-                        continue
-
-                    # 4. 해당 위치에 상자를 적재했을 때 트럭 길이를 넘지 않는지 확인
-                    count_L = 0
-                    while truck[count_L][pos_Y][pos_Z] != 0:
-                        count_L += 1
-                    if count_L+inputBox[i][j]['l'] > TRUCK_L:
-                        continue
-
-                    # 5. 적재할 상자의 아래가 막혀있는지 확인
-                    if pos_Z - 1 != -1:  # 가장 아래층인 경우 Z좌표가 -1이므로 따로 조건을 줌
-                        for x in range(inputBox[i][j]['l']):
-                            for y in range(inputBox[i][j]['w']):
-                                if truck[pos_X+x][pos_Y+y][pos_Z-1] == 0:
-                                    cannot_load = 1
-                                    break
-                        if cannot_load == 1:
+            if check[i][j] == 0 and j in inputBox[i]:
+                if inputBox[i][j]['w'] <= count_W:     # 1. 아직 적재하지 않은 상자이고, 너비가 count_W 이하면
+                    if inputBox[i][j]['w'] > max_box_W:     # 2. 최대 너비를 가진 상자를 찾음
+                        # 3. 해당 위치에 상자를 적재했을 때 트럭 높이를 넘지 않는지 확인
+                        count_H = 0     # 해당 위치에 상자 적재 전 높이
+                        while truck[pos_X][pos_Y][count_H] != 0:
+                            count_H += 1
+                        if count_H+inputBox[i][j]['h'] > TRUCK_H:
                             continue
-                    boxIndex = j  # 상자 인덱스 저장
-                    max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+
+                        # 4. 해당 위치에 상자를 적재했을 때 트럭 길이를 넘지 않는지 확인
+                        count_L = 0
+                        while truck[count_L][pos_Y][pos_Z] != 0:
+                            count_L += 1
+                        if count_L+inputBox[i][j]['l'] > TRUCK_L:
+                            continue
+
+                        # 5. 적재할 상자의 아래가 막혀있는지 확인
+                        if pos_Z - 1 != -1:  # 가장 아래층인 경우 Z좌표가 -1이므로 따로 조건을 줌
+                            for x in range(inputBox[i][j]['l']):
+                                for y in range(inputBox[i][j]['w']):
+                                    if truck[pos_X+x][pos_Y+y][pos_Z-1] == 0:
+                                        cannot_load = 1
+                                        break
+                            if cannot_load == 1:
+                                continue
+                        boxIndex = j  # 상자 인덱스 저장
+                        max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
 
         # 상자 적재 또는 빈 공간 채우기
         if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
@@ -355,6 +359,7 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
             plt.draw()
             plt.pause(0.0001)
 
+print (inputBox)
 
 plt.draw()
-plt.pause(10)
+plt.pause(100)
