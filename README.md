@@ -1025,3 +1025,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 주소지 데이터 받고 계속 돌리는 걸로 코드 바꾸기
     - 통신 젯슨에서 해보기
     - port 22
+
+---
+## 2020.09.20
+-**Jetson SSH-
+  - 해결  https://rtime.felk.cvut.cz/hw/index.php/NVIDIA_Jetson_TX2
+-**통신**
+  -
