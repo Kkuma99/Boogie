@@ -5,6 +5,7 @@
   <description>ROS package for turtlebot3_manipulation_gui</description>
 
   <license>Apache 2.0</license>
+  <maintainer email="wbclair7@konkuk.ac.kr">Pyo</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
