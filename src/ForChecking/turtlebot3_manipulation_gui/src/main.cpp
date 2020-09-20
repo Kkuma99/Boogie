@@ -1,21 +1,3 @@
-/*******************************************************************************
-* Copyright 2020 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed uto in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
-
-/* Authors: Ryan Shim */
-
 /*****************************************************************************
 ** Includes
 *****************************************************************************/
@@ -31,41 +13,59 @@
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
     turtlebot3_manipulation_gui::MainWindow w(argc,argv);
-    char n[1];
+
+    char n[1]; // data 전달받을 주소지 
+
+    // application 보여주고 거기서 실행 log 보여주기 
     w.show();
-    w.on_btn_timer_start_clicked();
+
+    w.on_btn_timer_start_clicked(); // 처음에 Qtimer 시작해야하기 때문에 클릭 
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-    int a[4] = {};
-    float b[4] = {0.550, 0.638, 0.068, -0.005};
+
+    //주소지 따른 행동 
+    float a[4] = {0.550, 0.638, 0.068, -0.005}; // 주소지 a가 행동할 방향 
+    float b[4] = {0.550, 0.638, 0.068, -0.005}; // 주소지 b가 행동할 방향 
+    float c[4] = {0.550, 0.638, 0.068, -0.005}; // 주소지 c가 행동할 방향 
+    // 치기 
+    float a_1[4] = {0.550, 0.638, 0.068, -0.005}; // a 박스 전달 
+    float b_1[4] = {0.550, 0.638, 0.068, -0.005}; // b 박스 전달 
+    float c_1[4] = {0.550, 0.638, 0.068, -0.005}; // c 박스 전달 
+
     std::cout << "주소지는 a/b/c/: ";
     std::cin >> n;
 
-    if(strcmp(n,"a")==0){
-        // 행동 진행 
-	w.on_btn_init_pose_clicked();
-        //std::cin >> n;
-        //sleep(2000);
-        //w.on_btn_home_pose_clicked();
-	std::cout << "a\n";
+    while(1){
+		if(strcmp(n,"a")==0){
+		    w.on_btn_send_joint_angle_clicked(a[0], a[1], a[2], a[3]);
+		    std::cin >> n; // 버퍼가 필요 - 다른 아이디어 있으면 대체 
+            w.on_btn_send_joint_angle_clicked(a_1[0], a_1[1], a_1[2], a_1[3]);
+            std::cin >> n; // 버퍼가 필요 - 다른 아이디어 있으면 대체 
+		    w.on_btn_init_pose_clicked();
+		    std::cout << "a\n";
+		}
+
+		else if(strcmp(n,"b")==0){
+		    w.on_btn_send_joint_angle_clicked(b[0], b[1], b[2], b[3]);
+		    std::cin >> n;
+            w.on_btn_send_joint_angle_clicked(b_1[0], b_1[1], b_1[2], b_1[3]);
+            std::cin >> n;
+		    w.on_btn_init_pose_clicked();
+		    std::cout << "b\n";
+		}
+
+		else if(strcmp(n,"c")==0){
+            w.on_btn_send_joint_angle_clicked(c[0], c[1], c[2], c[3]);
+            std::cin >> n;
+            w.on_btn_send_joint_angle_clicked(c_1[0], c_1[1], c_1[2], c_1[3]);
+            std::cin >> n;
+            w.on_btn_init_pose_clicked();
+		    std::cout << "c\n";
+		}
+
+        else{ // data sending 종료 시  
+            break;
+        }
+        int result = app.exec();
+        return result;
     }
-    else if(strcmp(n,"b")==0){
-	w.on_btn_send_joint_angle_clicked(b[0], b[1], b[2], b[3]);
-        std::cin >> n;
-	w.on_btn_init_pose_clicked();
-	//행동
-	std::cout << "b\n";
-    }
-    else if(strcmp(n,"c")==0){
-	//행동
-        std::cout << "c\n";
-    }
-    /*********************
-    ** Qt
-    **********************/
-    //QApplication app(argc, argv);
-    //turtlebot3_manipulation_gui::MainWindow w(argc,argv);
-    //w.show();
-    //app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-    int result = app.exec();
-    return result;
 }
