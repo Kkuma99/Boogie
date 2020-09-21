@@ -1052,39 +1052,19 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **ssh로 matplotlib 띄우기**
   - 환경에 pyzbar/opencv 깔려 있어야함
   - 로스에서 충돌나기 때문에 import sys -> sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+  - 결국에 모니터 연결해서 하는 것을 확정
+- **통신**
+  - 통신 자체가 단방향이여서 타이밍 문제가 크기 때문에 카메라 하나를 더 추가해서 roslaunch하는 부분에서 실행하기로 함
+- **전반적인 형태**
+  - launch 메인 코드에 CPP pyzbar를 사용하기 (cpp pyzbar 및 opencv 다운받아야함)
+  - 메인코드에서 카메라에서 박스 인식해서 주소지 인식하면 n에 주소지 형태 저장하고 저장이 되면 행동을 실행하도록 해야함 (행동을 하는 while문에서 마지막에 n을 초기화해줘야함)
+
+- `현재 문제`
+  - 원래 노트북으로 돌아오고 나서 gui를 여는데 문제가 있음 (다른 opencr로도 실행해볼 예정이지만 수정 필요)
   
-#!/usr/bin/env python
-import rospy
-from std_msgs.msg import String
-import cv2
-
-#talker
-def talker():
-    pub = rospy.Publisher('chatter',String,queue_size=10)
-    rospy.init_node('talker', anonymous = True)
-    rate = rospy.Rate(10) #10hz
-    while not rospy.is_shutdown():
-        hello_str = "Jetson to Minji %s" % rospy.get_time()
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
-        rate.sleep()
-
-#listener
-def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
-def listener():
-    rospy.init_node('listener',anonymous=True)
-    rospy.Subscriber("chatter", String, callback)
-    rospy.spin()
-
-#main
-if __name__=='__main__':
-    while True:
-        keyboard = input('key: ')
-        if keyboard == 't':
-            try:
-                talker()
-            except rospy.ROSInterruptException:
-                pass
-        elif keyboard == 'l':
-            listener()
+- **일정**
+  - pyzbar: 화요일에 찾아봐서 cpp 실행방법 알고 수요일에 launch 메인코드에 넣어보기
+  - open-manipulator: 화요일에 에러나는 부분 수정, 수요일에 위치 확실하게 고정하기, 목요일까지 pyzbar와 합쳐서 메인코드 완성
+  - 종료 조건: 목요일에 적재 종료 및 manipulator 종료 코드 확실하게 하기 (manipulator는 없어도 상관은 없음)
+  - 목요일 및 금요일에 환경 고정 및 감도 조절, 테스트
+  - 토요일까지 코드 수정 및 확실하게 하고 일요일에 영상 찍기
