@@ -1028,13 +1028,13 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 
 ---
 ## 2020.09.20
--**Jetson SSH**
+- **Jetson SSH**
   - 해결  https://rtime.felk.cvut.cz/hw/index.php/NVIDIA_Jetson_TX2
   
 -**현재 상황**
   - roscore와 연결이 되지 않아서 다른 노트북으로 진행해야함
   - 22 결국 해결 안됨 - 치는것으로 마무리해야함
--**open_manipulator**
+- **open_manipulator**
   - 1차적으로 코드 완성함
     - 해야할 일:
        - 박스 담는 경사면 위치 확실하게 하고 터틀봇 위치 확실하게 잡기
@@ -1046,3 +1046,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 9.22~23: 통신과 관련해서 코드 다시 수정하기
   - 9.24: 모든 것 합쳐서 진행하고 이상한 것 수정 및 추가적으로 필요한 것 찾아서 넣기
   - 9.27: 동영상 촬영
+
+---
+## 2020.09.21
+- **ssh로 matplotlib 띄우기**
+  - 환경에 pyzbar/opencv 깔려 있어야함
+  - 로스에서 충돌나기 때문에 import sys -> sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+  
