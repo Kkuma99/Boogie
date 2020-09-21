@@ -1065,6 +1065,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 - **일정**
   - pyzbar: 화요일에 찾아봐서 cpp 실행방법 알고 수요일에 launch 메인코드에 넣어보기
   - open-manipulator: 화요일에 에러나는 부분 수정, 수요일에 위치 확실하게 고정하기, 목요일까지 pyzbar와 합쳐서 메인코드 완성
-  - 종료 조건: 목요일에 적재 종료 및 manipulator 종료 코드 확실하게 하기 (manipulator는 없어도 상관은 없음)
+  - 통신: 화요일에 talker.py-> listener.cpp 테스트 해보고 안되면 메일보내서 질문하기
+  - 종료 조건: 금요일에 적재 종료 및 manipulator 종료 코드 확실하게 하기 (manipulator는 없어도 상관은 없음)
   - 목요일 및 금요일에 환경 고정 및 감도 조절, 테스트
   - 토요일까지 코드 수정 및 확실하게 하고 일요일에 영상 찍기
