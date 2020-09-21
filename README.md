@@ -1053,3 +1053,38 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 환경에 pyzbar/opencv 깔려 있어야함
   - 로스에서 충돌나기 때문에 import sys -> sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
   
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
+import cv2
+
+#talker
+def talker():
+    pub = rospy.Publisher('chatter',String,queue_size=10)
+    rospy.init_node('talker', anonymous = True)
+    rate = rospy.Rate(10) #10hz
+    while not rospy.is_shutdown():
+        hello_str = "Jetson to Minji %s" % rospy.get_time()
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+
+#listener
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id() + "%s", data.data)
+def listener():
+    rospy.init_node('listener',anonymous=True)
+    rospy.Subscriber("chatter", String, callback)
+    rospy.spin()
+
+#main
+if __name__=='__main__':
+    while True:
+        keyboard = input('key: ')
+        if keyboard == 't':
+            try:
+                talker()
+            except rospy.ROSInterruptException:
+                pass
+        elif keyboard == 'l':
+            listener()
