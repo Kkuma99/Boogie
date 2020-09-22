@@ -1075,9 +1075,13 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ## 2020.09.22
   - **에러관련**
     - 1차 해결방안으로 ntpdate로 싱크 맞추는 것을 알려줌 - 안된다
+    - 내일 해볼 방법: 새로 라즈비안 받아서 패키지 다운받고 실행해보기
     ```
     $ sudo apt-get install ntpdate
     $ sudo ntpdate ntp.ubuntu.com
     ```
     - https://yjs-program.tistory.com/42 이거 해줌 
-    - 
+ 
+  - **통신**
+    - cpp로 해보는 것 실패함
+    - 데이터 확장 찾아봄 - https://eunguru.tistory.com/84
