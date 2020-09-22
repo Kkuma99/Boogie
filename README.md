@@ -1070,3 +1070,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - 종료 조건: 금요일에 적재 종료 및 manipulator 종료 코드 확실하게 하기 (manipulator는 없어도 상관은 없음)
   - 목요일 및 금요일에 환경 고정 및 감도 조절, 테스트
   - 토요일까지 코드 수정 및 확실하게 하고 일요일에 영상 찍기
+  
+---
+## 2020.09.22
+  - **에러관련**
+    - 1차 해결방안으로 ntpdate로 싱크 맞추는 것을 알려줌 - 안된다
+    - https://yjs-program.tistory.com/42 이거 해줌 
+    - 
