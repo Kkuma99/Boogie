@@ -1085,3 +1085,14 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - **통신**
     - cpp로 해보는 것 실패함
     - 데이터 확장 찾아봄 - https://eunguru.tistory.com/84
+
+  - **C++ 바코드 인식**
+    - Window에서 코드 작성 및 테스트: VS에서 안되는 것으로 보임
+      - zbar 설치(http://zbar.sourceforge.net/download.html → https://sourceforge.net/projects/zbar/)
+      - 프로젝트에 라이브러리 추가(https://blessingdev.wordpress.com/2017/09/26/visual-studio%EC%97%90-%EC%99%B8%EB%B6%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0/)
+    - G++로 컴파일 시도해봐야 함
+      - 코드 참고
+        - https://www.learnopencv.com/barcode-and-qr-code-scanner-using-zbar-and-opencv/
+        - https://stackoverflow.com/questions/56068886/how-to-configure-c-zbar-scanner-to-decode-only-qr-code-data-type
+        - http://blog.naver.com/PostView.nhn?blogId=jdkim2004&logNo=221125562861&parentCategoryNo=27&categoryNo=&viewDate=&isShowPopularPosts=true&from=search
+        - https://github.com/ayoungprogrammer/WebcamCodeScanner/blob/master/main.cpp
