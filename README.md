@@ -1096,3 +1096,18 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
         - https://stackoverflow.com/questions/56068886/how-to-configure-c-zbar-scanner-to-decode-only-qr-code-data-type
         - http://blog.naver.com/PostView.nhn?blogId=jdkim2004&logNo=221125562861&parentCategoryNo=27&categoryNo=&viewDate=&isShowPopularPosts=true&from=search
         - https://github.com/ayoungprogrammer/WebcamCodeScanner/blob/master/main.cpp
+        
+---
+## 2020.09.23
+  - **에러관련**
+    - 결국에 이미지 새로 구워서 다시 진행하니까 해결됨 / 결론적으로 이유는 찾지 못함
+    
+  - **위치확정**
+    - 테스트로 위치 확정
+    - 이후 옮겨서 안에서 계속 해보는게 제일 확실
+  
+  - **로봇에서 데이터 받기**
+     - 수요일부터 목요일까지 시도하기
+     1. 노트북에 카메라 연결해서 zbar/opencv install하여 데이터 그대로 cpp로 받기 - 현재 버전으로 안될 것 같음
+     2. 원래 카메라에서 데이터 받아서 파이썬 투 씨쁠쁠로 데이터 변경하기
+     3. publisher.py -> subscriber.cpp ??
