@@ -1103,11 +1103,16 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     - 결국에 이미지 새로 구워서 다시 진행하니까 해결됨 / 결론적으로 이유는 찾지 못함
     
   - **위치확정**
-    - 테스트로 위치 확정
+    - 테스트로 위치 확정 (목)
     - 이후 옮겨서 안에서 계속 해보는게 제일 확실
   
   - **로봇에서 데이터 받기**
      - 수요일부터 목요일까지 시도하기
      1. 노트북에 카메라 연결해서 zbar/opencv install하여 데이터 그대로 cpp로 받기 - 현재 버전으로 안될 것 같음
      2. 원래 카메라에서 데이터 받아서 파이썬 투 씨쁠쁠로 데이터 변경하기
-     3. publisher.py -> subscriber.cpp ??
+     3. publisher.py -> subscriber.cpp 이거로 하기로 결정
+     - cpp 참고: https://pinkwink.kr/900#google_vignette
+     - pub.cpp -> sub.py 참고: https://youtu.be/dQLIbEdUCRM
+     
+  
+   
