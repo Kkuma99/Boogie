@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
@@ -5,6 +8,16 @@ import mpl_toolkits.mplot3d.art3d as art3d
 import pyzbar.pyzbar as pyzbar
 import cv2
 
+
+def talker(boxData):
+    pub = rospy.Publisher('chatter',String,queue_size=10)
+    rospy.init_node('talker', anonymous = True)
+    rate = rospy.Rate(10) #10hz
+    if not rospy.is_shutdown():
+        hello_str = boxData
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
 
 # 트랙바를 위한 dummy 함수
 def nothing(x):
@@ -73,7 +86,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 프레임 높이 480으로 설정
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
-cv2.setTrackbarPos('threshold', 'image', 70)  # 트랙바의 초기값 지정
+cv2.setTrackbarPos('threshold', 'image', 50)  # 트랙바의 초기값 지정
 
 text = "NONE"
 x = y = w = h = 0
@@ -147,15 +160,17 @@ while True:
             # 박스 픽셀크기 측정
             box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
             box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
-            # 박스 실제크기 계산###################################비례식 이용
+            # 박스 실제크기 계산
             box_w = int(round(box_w_pixel/40.8, 0))
             box_l = int(round(box_l_pixel/40.8, 0))
-            #print('Size of box: ', box_w_pixel, box_l_pixel)  # 상자의 픽셀 크기 출력2
+
             #print(barcode_data)  # 바코드 인식 결과 출력
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0])-65]:   # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': BOX_H}
                 NUM_BOX[ord(barcode_data[0])-65] += 1
+                print('Size of box: ', box_w, box_l)  # 상자의 크기 출력
+                talker(barcode_data)
 
 
     cv2.rectangle(img_color, (315, 0), (325, 480), (255, 0, 0), 1)
