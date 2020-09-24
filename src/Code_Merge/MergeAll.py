@@ -90,7 +90,7 @@ cv2.setTrackbarPos('threshold', 'image', 50)  # 트랙바의 초기값 지정
 
 text = "NONE"
 x = y = w = h = 0
-barcode_data = 0
+barcode_data = "XXX"
 
 while True:
     ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
@@ -170,7 +170,6 @@ while True:
                 inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': BOX_H}
                 NUM_BOX[ord(barcode_data[0])-65] += 1
                 print('Size of box: ', box_w, box_l)  # 상자의 크기 출력
-                talker(barcode_data)
 
 
     cv2.rectangle(img_color, (315, 0), (325, 480), (255, 0, 0), 1)
@@ -179,7 +178,8 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == 27:  # 1초 단위로 update되며, esc키를 누르면 탈출하여 종료
         break
-
+    talker(barcode_data)
+    
 cap.release()
 cv2.destroyAllWindows()
 
