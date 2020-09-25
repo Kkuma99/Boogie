@@ -1147,7 +1147,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 			- http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
     2. char c[4]와 float c[4]의 변수명이 중복되어 `char c[4] → char curr[4]`, `char d[4] → char prev[4]`로 변경, "XXX"로 문자열 초기화
     3. Queue에 push하는 부분 수정 → 동작 수행 성공
-    		- strcmp, memcpy 사용
+		- strcmp, memcpy 사용
     - 데이터를 받아 queue에 push하는 것까지 동작 확인하였으나 지역별 로봇팔 수행 부분(if문)을 주석해제할 시 데이터를 받지 못하고(chatterCallback 수행 X), 에러도 나지 않는 상태로 유지됨
 	```cpp
 	#include <stdio.h>
