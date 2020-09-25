@@ -1138,16 +1138,16 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ## 2020.09.25
   - **Ros Data Communication**
     1. spin()은 데이터를 받으면 main으로 돌아가지 않음(다른 코드를 수행하지 않음), 즉 계속해서 데이터를 받는 동작만 수행함. 기존의 tutorial 실행 시에는 다른 동작이 없고 오로지 데이터를 받기만 하면 됐으므로 상관없지만 우리 코드에서는 while을 돌며 다른 동작을 수행해야 함 → **spin() 대신 spinOnce()와 rate()를 사용하여 해결**(printf로 의미없는 문자를 출력해봤을 때 문제없이 동작함)
-      - spin(), spinOnce() 참고
-        - https://programming.vip/docs/ros-ros-spin-and-ros-spinonce-differences-and-use.html
-        - https://answers.ros.org/question/357705/stop-rosspin/
-        - https://answers.ros.org/question/11887/significance-of-rosspinonce/
-      - thread 관련(spin 구글링 중 나온 자료)
-        - https://yuzhangbit.github.io/tools/several-ways-of-writing-a-ros-node/
-        - http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
+	      - spin(), spinOnce() 참고
+		- https://programming.vip/docs/ros-ros-spin-and-ros-spinonce-differences-and-use.html
+		- https://answers.ros.org/question/357705/stop-rosspin/
+		- https://answers.ros.org/question/11887/significance-of-rosspinonce/
+	      - thread 관련(spin 구글링 중 나온 자료)
+		- https://yuzhangbit.github.io/tools/several-ways-of-writing-a-ros-node/
+		- http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
     2. char c[4]와 float c[4]의 변수명이 중복되어 `char c[4] → char curr[4]`, `char d[4] → char prev[4]`로 변경, "XXX"로 문자열 초기화
     3. Queue에 push하는 부분 수정 → 동작 수행 성공
-    	- strcmp, memcpy 사용
+    		- strcmp, memcpy 사용
     - 데이터를 받아 queue에 push하는 것까지 동작 확인하였으나 지역별 로봇팔 수행 부분(if문)을 주석해제할 시 데이터를 받지 못하고(chatterCallback 수행 X), 에러도 나지 않는 상태로 유지됨
 	```cpp
 	#include <stdio.h>
