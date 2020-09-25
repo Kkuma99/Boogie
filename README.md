@@ -1133,3 +1133,14 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - **추가사항 - 멀티쓰레드**
     - c++에서 fork함수로 진행하면 데이터값 실시간으로 받을 수 있을 것이라 예상
     - 하지만 확인 필요
+
+---
+## 2020.09.25
+  - **Ros Data Communication**
+    - spin(), spinOnce()
+      - https://programming.vip/docs/ros-ros-spin-and-ros-spinonce-differences-and-use.html
+      - https://answers.ros.org/question/357705/stop-rosspin/
+      - https://answers.ros.org/question/11887/significance-of-rosspinonce/
+    - thread
+      - https://yuzhangbit.github.io/tools/several-ways-of-writing-a-ros-node/
+      - http://wiki.ros.org/roscpp/Overview/Callbacks%20and%20Spinning
