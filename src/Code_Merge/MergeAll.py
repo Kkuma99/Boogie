@@ -79,14 +79,17 @@ finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장�
 
 
 # Read image(640*480)
-cap = cv2.VideoCapture(1)  # 내장 camera인 경우: 0 / USB camera인 경우: 1
+
+cap = cv2.VideoCapture('/dev/video1')  # 내장 camera인 경우: 0 / USB camera인 경우: 1
+
 cap.set(cv2.CAP_PROP_FPS, 30) # FPS(프레임속도) 30으로 설정
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 640으로 설정
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 프레임 높이 480으로 설정
 
+
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
-cv2.setTrackbarPos('threshold', 'image', 50)  # 트랙바의 초기값 지정
+cv2.setTrackbarPos('threshold', 'image', 10)  # 트랙바의 초기값 지정
 
 text = "NONE"
 x = y = w = h = 0
@@ -220,7 +223,6 @@ for i in range(NUM_LOCAL):  # 각 지역별로 수행
     sum_num_box += NUM_BOX[i]   # 앞 지역부터 상자의 개수를 더함
 
     while True:
-        print('finish:',finish[i],'NUM_BOX:',NUM_BOX[i],'order:',i)
         if finish[i] == NUM_BOX[i]:     # 해당 지역 상자들의 적재가 끝나기 전까지 반복
             break
 
