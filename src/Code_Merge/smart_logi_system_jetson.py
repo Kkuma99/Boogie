@@ -44,7 +44,7 @@ def box_detection(img_color):
     # threshold 설정
     threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     low = cv2.getTrackbarPos('threshold', 'image')  # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 트랙바의 threshold값 받아옴
+    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
 
     # contour 검출
     val, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -70,24 +70,23 @@ def box_detection(img_color):
     box = np.int0(box)
     img_color = cv2.drawContours(img_color, [box], 0, (0, 0, 255), 2)
 
-    return img_color, gray_barcode, rect, box
+    return img_color, gray_barcode, box
 
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
-def get_box_info(img_color, gray_barcode, rect, box, barcode_data, inputBox, NUM_BOX):
+def get_box_info(img_color, gray_barcode, box, barcode_data, inputBox, NUM_BOX):
     # 상자가 화면의 중앙에 왔을 때 크기 측정과 바코드 스캔
     cv2.rectangle(img_color, (310, 0), (330, 480), (255, 0, 0), 1)
-    center = box[1][0] + (box[3][0] - box[1][0]) / 2    # 상자 중심 y좌표
+    center = box[1][0] + (box[3][0] - box[1][0]) / 2    # 상자 중심 x좌표
     # print(center)
     if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:    # 상자가 화면의 중앙 부근에 왔을 때
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
             x, y, w, h = d.rect
+            cv2.rectangle(img_color, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
             barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
             barcode_type = d.type   # 바코드 타입
-
-            cv2.rectangle(img_color, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
             # 화면에 바코드 정보 띄우기
             text = '%s (%s)' % (barcode_data, barcode_type)
@@ -97,8 +96,8 @@ def get_box_info(img_color, gray_barcode, rect, box, barcode_data, inputBox, NUM
             box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
             box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
             # 박스 실제크기 계산
-            box_w = int(round(box_w_pixel/40.8, 0))
             box_l = int(round(box_l_pixel/40.8, 0))
+            box_w = int(round(box_w_pixel/40.8, 0))
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0])-65]:   # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0])-65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': BOX_H}
@@ -148,7 +147,6 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
             # endOfL(현재 층에서 가장 작은 길이를 측정하기 위한 변수) 계산
             endOfL = TRUCK_L
             for j in range(TRUCK_W):    # 너비 방향으로 검사
-
                 count_L = 0
                 while truck[count_L][j][floor * BOX_H] != 0:    # 빈 공간이 나올때까지 반복
                     if count_L == TRUCK_L-1:    # truck의 인덱스 끝까지 가면 탈출
@@ -275,6 +273,9 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
                 print("This Box is [%s%02d]"%(chr(i+65), boxIndex)) # 현재 적재한 상자의 정보를 화면에 출력
                 input("Press Enter to load next box")   # Enter 키를 입력하면 다음 상자를 적재
 
+    print("Finish loading all your boxes!")
+    plt.draw()  # 마지막으로 plot
+    plt.pause(60)   # 1분간 유지
 
 # Number of locals and boxes
 NUM_LOCAL = 3
@@ -318,15 +319,14 @@ while True:
     if not ret:
         continue
 
-    img_color, gray_barcode, rect, box = box_detection(img_color)   # 상자 인식
-    barcode_data = get_box_info(img_color, gray_barcode, rect, box, barcode_data, inputBox, NUM_BOX)    # 상자 정보
+    img_color, gray_barcode, box = box_detection(img_color)   # 상자 인식
+    barcode_data = get_box_info(img_color, gray_barcode, box, barcode_data, inputBox, NUM_BOX)    # 상자 정보
+
+    send_data_to_host(barcode_data) # 바코드 데이터를 Host PC로 전송
 
     cv2.imshow('image', img_color)  # 화면에 표시
     if cv2.waitKey(1) & 0xFF == 27:  # 1초 단위로 update되며, ESC키를 누르면 탈출하여 종료
         break
-
-    send_data_to_host(barcode_data) # 바코드 데이터를 Host PC로 전송
-    
 
 # 영상처리에 사용된 메모리를 해제
 cap.release()
@@ -343,6 +343,3 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 draw_truck(np.array([0, TRUCK_L]), np.array([0, TRUCK_W]), np.array([0, TRUCK_H]))  # 트럭 시각화
 calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck) # 상자 적재 순서 계산 및 시각화
-
-plt.draw()  # 마지막으로 plot
-plt.pause(60)   # 1분간 유지
