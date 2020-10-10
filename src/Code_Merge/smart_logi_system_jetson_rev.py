@@ -27,9 +27,9 @@ def nothing(x):
 
 # 카메라로 받아오는 영상을 표시할 화면을 설정하는 함수
 def set_window():
-    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-    cv2.createTrackbar('threshold', 'image', 0, 255, nothing)  # 트랙바 생성
-    cv2.setTrackbarPos('threshold', 'image', 59)  # 트랙바의 초기값 지정
+    cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL)
+    cv2.createTrackbar('threshold', 'LOGI', 0, 255, nothing)  # 트랙바 생성
+    cv2.setTrackbarPos('threshold', 'LOGI', 59)  # 트랙바의 초기값 지정
 
 
 # 상자 인식 알고리즘을 수행하는 함수
@@ -42,7 +42,7 @@ def box_detection(img_color, result):
 
     # threshold 설정
     threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-    low = cv2.getTrackbarPos('threshold', 'image')  # 트랙바의 현재값을 가져옴
+    low = cv2.getTrackbarPos('threshold', 'LOGI')  # 트랙바의 현재값을 가져옴
     retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
 
     # contour 검출
@@ -77,7 +77,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     gray_barcode = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)  # 그레이 스케일로 변환
 
     # 상자가 화면의 중앙에 왔을 때 크기 측정과 바코드 스캔
-    cv2.rectangle(img_color, (310, 0), (330, 480), (255, 0, 0), 1)
+    cv2.rectangle(result, (310, 0), (330, 480), (255, 0, 0), 1)
     center = box[1][0] + (box[3][0] - box[1][0]) / 2    # 상자 중심 x좌표
     # print(center)
     if img_color.shape[1]/2-10 <= center <= img_color.shape[1]/2+10:    # 상자가 화면의 중앙 부근에 왔을 때
