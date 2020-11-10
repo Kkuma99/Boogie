@@ -1321,4 +1321,10 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 	    int result = app.exec();
 	    return result;
 	}
-```
+	```
+
+---
+## 2020.11.10
+  - **대회들 준비**
+    - 임베디드 sw 경진대회 결선 준비 - 코드 일부 업그레이드 
+    - 창의설계 및 sw경진대회 시연 준비
