@@ -1324,7 +1324,30 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 	```
 
 ---
-## 2020.11.10
+## 2020.11.10.
   - **대회들 준비**
     - 임베디드 sw 경진대회 결선 준비 - 코드 일부 업그레이드 
     - 창의설계 및 sw경진대회 시연 준비
+
+---
+## 2020.11.16.
+  - **에러 발생(No matching signal)**
+    - 에러 메세지
+    	```
+	QMetaObject::connectSlotsByName: No matching signal for 'on_btn_read_joint_angle_clicked'
+	```
+	
+---
+## 2020.11.19.
+  - **에러 해결(No matching signal)**
+    - 함수 이름의 `on_`을 삭제하고 실행함(btn_read_joint_angle_clicked)
+        - 참고 링크: https://m.blog.naver.com/cherrypeanut/220978305061
+    
+---
+## 2020.11.20.
+  - **에러 발생**
+    - 이름 변경한 함수(btn_read_joint_angle_clicked)가 둘 중 첫번째만 실행되고 에러가 발생함
+    - 에러 메세지
+    	```
+	ABORTED: Solution found but controller failed during execution
+	```
