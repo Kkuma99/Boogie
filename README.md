@@ -1333,9 +1333,9 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 ## 2020.11.16.
   - **에러 발생(No matching signal)**
     - 에러 메세지
-    	```
-	QMetaObject::connectSlotsByName: No matching signal for 'on_btn_read_joint_angle_clicked'
-	```
+      ```
+      QMetaObject::connectSlotsByName: No matching signal for 'on_btn_read_joint_angle_clicked'
+      ```
 	
 ---
 ## 2020.11.19.
@@ -1348,6 +1348,6 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
   - **에러 발생**
     - 이름 변경한 함수(btn_read_joint_angle_clicked)가 둘 중 첫번째만 실행되고 에러가 발생함
     - 에러 메세지
-    	```
-	ABORTED: Solution found but controller failed during execution
-	```
+      ```
+      ABORTED: Solution found but controller failed during execution
+      ```
