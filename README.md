@@ -1351,3 +1351,21 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
       ```
       ABORTED: Solution found but controller failed during execution
       ```
+
+---
+## 2020.11.23.
+  - **에러 해결**
+    - 시간 딜레이를 조금 더 늘려주니 문제가 해결 되었다. (usleep 조정 필요)
+      ```
+      ABORTED: Solution found but controller failed during execution
+      ```
+  - **카메라 위치 조정**
+    - 위치를 끝으로 조정하고 한개로 하기로 변경함 
+  
+  - 할일
+    1. 카메라 위치 맞게 사이즈 조정 (박스) 
+    2. 카메라 지지대 프린트하기
+    3. 박스 데이터 딜레이 조정
+    4. 슬립 조정 및 다이나믹셀 속도 변경 관련 확인
+    5. box gripper
+    6. 발표 준비
