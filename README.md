@@ -1369,3 +1369,14 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     4. 슬립 조정 및 다이나믹셀 속도 변경 관련 확인
     5. box gripper
     6. 발표 준비
+    
+---
+## 2020.11.26.
+  - *dynamixel velocity*
+    - http://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/time_parameterization/time_parameterization_tutorial.html 참고하여 설정 변경해봤으나 속도 동일
+    - 답변에서 내부적으로 설정 고정 가능하다하면 설정 변경할 예정
+  - 카메라 위치 변경: 박스 크기 확실히 나옴
+  - 할 일
+    - velocity (~일요일)
+    - 발표 세팅 (대본쓰기 / 웹캠 설치 - 일)
+    - 화요일 리허설
