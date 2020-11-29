@@ -30,7 +30,7 @@ def nothing(x):
 def set_window():
     cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL)
     cv2.createTrackbar('threshold', 'LOGI', 0, 255, nothing)  # 트랙바 생성
-    cv2.setTrackbarPos('threshold', 'LOGI', 60)  # 트랙바의 초기값 지정
+    cv2.setTrackbarPos('threshold', 'LOGI', 75)  # 트랙바의 초기값 지정
 
 
 # 상자 인식 알고리즘을 수행하는 함수
