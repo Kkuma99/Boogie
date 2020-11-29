@@ -8,7 +8,7 @@ import mpl_toolkits.mplot3d.art3d as art3d
 import pyzbar.pyzbar as pyzbar
 import cv2
 
-# ROS 통신으로 Host PC에 Data를 전송(Subscribe)하는 함수
+# ROS 통신으로 Host PC에 Data를 전송(Publish)하는 함수
 def send_data_to_host(boxData):
    pub = rospy.Publisher('chatter',String,queue_size=10)
    rospy.init_node('talker', anonymous = True)
@@ -41,6 +41,11 @@ def box_detection(img_color, result):
    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
    # contour 검출
    val, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+   # 검출되는 contour가 없으면 함수 종료
+   if contours == 0:
+       return
+
    # 면적이 가장 큰 contour 추출
    max_area = 0
    max_index = -1
@@ -54,6 +59,7 @@ def box_detection(img_color, result):
 
    # 원본 이미지에 컨투어 표시
    cv2.drawContours(result, contours, max_index, (0, 255, 0), 3)
+
    # 컨투어를 둘러싸는 가장 작은 사각형 그리기
    cnt = contours[max_index]
    rect = cv2.minAreaRect(cnt)
