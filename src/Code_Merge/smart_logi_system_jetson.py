@@ -30,7 +30,7 @@ def set_window():
    cv2.setTrackbarPos('threshold', 'LOGI', 60)  # 트랙바의 초기값 지정
 
 # 상자 인식 알고리즘을 수행하는 함수
-def box_detection(img_color, result):
+def box_detection(img_color, result, box):
    # 가우시안 블러 적용
    blurred = cv2.GaussianBlur(img_color, (5, 5), 0)
    # 그레이스케일로 변환
@@ -42,10 +42,6 @@ def box_detection(img_color, result):
    # contour 검출
    val, contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-   # 검출되는 contour가 없으면 함수 종료
-   if contours == 0:
-       return
-
    # 면적이 가장 큰 contour 추출
    max_area = 0
    max_index = -1
@@ -56,6 +52,9 @@ def box_detection(img_color, result):
        if area > max_area:
            max_area = area
            max_index = index
+
+   if max_index == -1:
+       return result, box
 
    # 원본 이미지에 컨투어 표시
    cv2.drawContours(result, contours, max_index, (0, 255, 0), 3)
@@ -279,7 +278,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 640으로 설정
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) # 프레임 높이 480으로 설정
 
 set_window()    # 화면 설정
-
+box = ()
 # 지속적인 영상처리를 위한 while문
 while True:
    ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
@@ -287,7 +286,7 @@ while True:
    if not ret:
        continue
    result = img_color.copy()   # 화면에 표시하기 위해 img_color를 result에 복사
-   result, box = box_detection(img_color, result)   # 상자 인식
+   result, box = box_detection(img_color, result, box)   # 상자 인식
    barcode_data, result = get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX)    # 상자 정보
 
    send_data_to_host(barcode_data) # 바코드 데이터를 Host PC로 전송
