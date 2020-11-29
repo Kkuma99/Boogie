@@ -1372,7 +1372,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     
 ---
 ## 2020.11.26.
-  - *dynamixel velocity*
+  - **dynamixel velocity**
     - http://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/time_parameterization/time_parameterization_tutorial.html 참고하여 설정 변경해봤으나 속도 동일
     - 답변에서 내부적으로 설정 고정 가능하다하면 설정 변경할 예정
   - 카메라 위치 변경: 박스 크기 확실히 나옴
@@ -1383,10 +1383,13 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
     
 ---
 ## 2020.11.29.
-   - *cotouring error*
-     - 문제: 카메라 위치를 변경하면서 팔이 근처를 지나가니까 어두워지면서 꺼짐
+   - **cotouring error**
+     - 문제: 카메라 위치를 변경하면서 팔이 근처를 지나가니까 프로그램이 종료됨
+     - 원인: 검출된 컨투어가 없어서 오류 발생
+     - 해결: box_detection()에서 예외 처리 추가
+     	- max_index가 -1이면 이전 상태의 result와 box를 그대로 return
    
-   - * delay *
+   - **delay**
      - 카메라 위치가 바뀌면서 팔 시작 전에 딜레이가 필요없어서 이를 지움
      - 최적으로 제일 빠른게 2400000이라 이로 조정해둠
      
