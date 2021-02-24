@@ -30,7 +30,7 @@ def nothing(x):
 def set_window():
     cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL)
     cv2.createTrackbar('threshold', 'LOGI', 0, 255, nothing)  # 트랙바 생성
-    cv2.setTrackbarPos('threshold', 'LOGI', 75)  # 트랙바의 초기값 지정
+    cv2.setTrackbarPos('threshold', 'LOGI', 50)  # 트랙바의 초기값 지정
 
 
 # 상자 인식 알고리즘을 수행하는 함수
@@ -40,7 +40,9 @@ def box_detection(img_color, result, box):
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
     retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    
+    # cv2.imshow('bin', bin)
+    # cv2.waitKey()
+
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
     kernel = np.ones((3,3),np.uint8)
@@ -70,6 +72,8 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(water_img, markers)
     water_img[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     water_img[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
+    # cv2.imshow('fg', water_img)
+    # cv2.waitKey()
 
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
