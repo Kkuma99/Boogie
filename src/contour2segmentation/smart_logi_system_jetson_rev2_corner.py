@@ -39,12 +39,12 @@ def box_detection(img_color, result, box):
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, 75, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
     kernel = np.ones((3,3),np.uint8)
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 2)
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 2) # 초기 바이너리 이미지로부터
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -54,7 +54,7 @@ def box_detection(img_color, result, box):
     result_dist_transform = cv2.normalize(dist_transform, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8UC1)
 
     #  확실한 전경 확보
-    ret, sure_fg = cv2.threshold(dist_transform, 0.7*dist_transform.max(),255, cv2.THRESH_BINARY)
+    ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
     sure_fg = np.uint8(sure_fg)
 
     # 확실한 배경 - 확실한 전경 = 모르는 부분
@@ -70,45 +70,34 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(water_img, markers)
     water_img[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     water_img[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
-    
-    cv2.imshow('foreground', water_img)
-    cv2.waitKey()
 
+    ''' 검출된 전경의 꼭짓점 찾기 '''
+    # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     water_gray = cv2.cvtColor(water_img, cv2.COLOR_BGR2GRAY)
     corners = cv2.goodFeaturesToTrack(water_gray, 40, 0.01, 10)
     
+    # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
-
     for i in corners:
         x, y = i[0]
-        if x > 5 and y > 5 and x < 635 and y < 475:
-            if y < pos[1]:
+        if x > 5 and y > 5 and x < 635 and y < 475: # 카메라 화면의 꼭짓점 검출 방지
+            if y < pos[1]: # Y의 최소 좌표 찾기 (왼쪽 상단)
                 pos[0] = x
                 pos[1] = y
-            if y > pos[5]:
-                pos[4] = x
-                pos[5] = y
-            if x < pos[2]:
+            if x < pos[2]: # X의 최소 좌표 찾기 (왼쪽 하단)
                 pos[2] = x
                 pos[3] = y
-            if x > pos[6]:
+            if y > pos[5]: # Y의 최대 좌표 찾기 (오른쪽 하단)
+                pos[4] = x
+                pos[5] = y
+            if x > pos[6]: # X의 최대 좌표 찾기 (오른쪽 상단)
                 pos[6] = x
                 pos[7] = y	
 
-    box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7]))
-    box = np.int0(box)
-    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2)
-    return result, box
-
-
-'''
-[이미지세그멘테이션] https://webnautes.tistory.com/1281
-[이미지세그멘테이션2] http://www.gisdeveloper.co.kr/?p=6740
-[객체영역분할] https://deep-learning-study.tistory.com/228
-[객체영역분할2] https://jvvp.tistory.com/1085
-[임계값] https://m.blog.naver.com/samsjang/220504782549
-[윤곽선] https://m.blog.naver.com/samsjang/220517391218
-'''
+    box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
+    box = np.int0(box) # 정수형으로 변경
+    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+    return result, box # 윤곽선 그려진 이미지와 꼭짓점 반환
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
 def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
