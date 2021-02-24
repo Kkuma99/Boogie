@@ -39,7 +39,7 @@ def box_detection(img_color, result, box):
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    retval, bin = cv2.threshold(gray, 75, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
@@ -71,17 +71,31 @@ def box_detection(img_color, result, box):
     water_img[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     water_img[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
     
-    water_gray = cv2.cvtColor(water_img, cv2.COLOR_BGR2GRAY)
+    cv2.imshow('foreground', water_img)
+    cv2.waitKey()
 
-    corners = cv2.goodFeaturesToTrack(water_gray, 10, 0.01, 10)
+    water_gray = cv2.cvtColor(water_img, cv2.COLOR_BGR2GRAY)
+    corners = cv2.goodFeaturesToTrack(water_gray, 40, 0.01, 10)
     
+    pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
+
     for i in corners:
         x, y = i[0]
-        cv2.circle(water_img, (x, y), 3, (0, 255, 0), 1, cv2.LINE_AA)
-    cv2.imshow('image', water_img)
-    cv2.waitKey(0)
+        if x > 5 and y > 5 and x < 635 and y < 475:
+            if y < pos[1]:
+                pos[0] = x
+                pos[1] = y
+            if y > pos[5]:
+                pos[4] = x
+                pos[5] = y
+            if x < pos[2]:
+                pos[2] = x
+                pos[3] = y
+            if x > pos[6]:
+                pos[6] = x
+                pos[7] = y	
 
-    box = (tuple(corners[0]), tuple(corners[1]), tuple(corners[2]), tuple(corners[3]))
+    box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7]))
     box = np.int0(box)
     result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2)
     return result, box
@@ -369,4 +383,3 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 draw_truck(np.array([0, TRUCK_L]), np.array([0, TRUCK_W]), np.array([0, TRUCK_H]))  # 트럭 시각화
 calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck)  # 상자 적재 순서 계산 및 시각화
-
