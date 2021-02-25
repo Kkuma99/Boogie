@@ -1453,6 +1453,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 	- 커널 크기 늘려주기, 반복횟수 늘려주기
 
 [모폴로지연산](https://webnautes.tistory.com/1257)
+
 [모폴로지연산2](https://076923.github.io/posts/Python-opencv-27/)
 
 - 한 화면에 박스가 2개 들어오는 경우 고려해야하나?  ..ㅜ 제발
