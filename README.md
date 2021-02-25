@@ -1442,3 +1442,57 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 2. 박스의 높이 측정 코드 작성
 3. 박스의 무게 측정 -> 바코드 데이터 읽는 부분 수정 필요
 4. 적재 알고리즘 수정?
+
+---
+## 2021.02.25
+
+### Box Detection using Image Segmentation
+
+- 링크 참고하여, 이미지 세그멘테이션 더 안정화시켜보기
+	- 오프닝과 클로징 함께 사용해보기
+	- 커널 크기 늘려주기, 반복횟수 늘려주기
+
+[모폴로지연산](https://webnautes.tistory.com/1257)
+[모폴로지연산2](https://076923.github.io/posts/Python-opencv-27/)
+
+- 한 화면에 박스가 2개 들어오는 경우 고려해야하나?  ..ㅜ 제발
+
+### Track Bar
+
+```python
+ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(), 255, cv2.THRESH_BINARY)
+# 이 코드 참고하여 전체 화면에서 가장 큰 픽셀 값의 특정 비율로 이진화 진행한다면 트랙바 사용하지 않아도 조도에 따라 조절해줄 수 있지 않을까?
+```
+
+### Box Height
+
+- 박스의 높이가 높을수록 화면에서 윗면이 차지하는 비율이 커질 것이라 판단하여 그 비율로 높이를 측정하려 했음
+	- 그러면 다른 박스와 높이는 같은데, 윗면의 넓이 자체가 큰 박스가 있다면? 이 생각은 실패
+
+- 컨베이어 벨트에 크기가 고정된 스티커를 붙여놓고, 그 스티커와 윗면의 비율을 따져서 높이 구할 수 있지 않을까?
+	- 첫번째 생각과 같은 문제 발생, 스티커라는 것을 추가하는 것도 뭔가.. 좋지 않다
+
+- 박스에는 바코드 스티커가 항상 붙어있고, 이 크기는 항상 일정하다. 그렇다면 바코드 스티커가 화면에서 차지하는 비율을 이용해 높이 측정할 수 있지 않을까?
+	- 가장 시도해볼만한 생각
+	- 이를 시도하기 위해 바코드 스티커가 화면에서 차지하는 크기 측정 필요 -> 검출한 바코드의 w, h 이용하여 구할 수 있을 듯
+
+### Box Weight
+
+- 바코드에 무게 정보를 더 추가해야한다.
+```
+기존 바코드: A00 -> 새로운 바코드: A0020 (박스의 무게가 20kg이라는 것을 뜻함)
+```
+
+- 기존 코드 수정 필요
+```python
+        # 박스 실제크기 계산
+        box_l = int(round(box_l_pixel / 35, 0)) # 길이
+        box_w = int(round(box_w_pixel / 35, 0)) # 너비
+        box_h = BOX_H # 높이
+        box_k = int(barcode_data[3:5]) # 무게 정보 추가
+	    
+	if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
+                inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h, 'k': box_k} # 이 부분에 무게 정보 추가
+                NUM_BOX[ord(barcode_data[0]) - 65] += 1
+                print('Info of box: ', box_w, box_l, box_h, box_k)  # 상자의 크기와 무게 출력
+```
