@@ -30,7 +30,7 @@ def nothing(x):
 def set_window():
     cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL)
     cv2.createTrackbar('threshold', 'LOGI', 0, 255, nothing)  # 트랙바 생성
-    cv2.setTrackbarPos('threshold', 'LOGI', 75)  # 트랙바의 초기값 지정
+    cv2.setTrackbarPos('threshold', 'LOGI', 50)  # 트랙바의 초기값 지정
 
 
 # 상자 인식 알고리즘을 수행하는 함수
@@ -39,12 +39,15 @@ def box_detection(img_color, result, box):
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    
+    retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    # cv2.imshow('bin', bin)
+    # cv2.waitKey()
+
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
-    kernel = np.ones((3,3),np.uint8)
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 2)
+    kernel = np.ones((5,5),np.uint8)
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -54,7 +57,7 @@ def box_detection(img_color, result, box):
     result_dist_transform = cv2.normalize(dist_transform, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8UC1)
 
     #  확실한 전경 확보
-    ret, sure_fg = cv2.threshold(dist_transform, 0.7*dist_transform.max(),255, cv2.THRESH_BINARY)
+    ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
     sure_fg = np.uint8(sure_fg)
 
     # 확실한 배경 - 확실한 전경 = 모르는 부분
@@ -70,47 +73,41 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(water_img, markers)
     water_img[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     water_img[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
-    
+    # cv2.imshow('fg', water_img)
+    # cv2.waitKey()
+
     water_gray = cv2.cvtColor(water_img, cv2.COLOR_BGR2GRAY)
     retval, water_bin = cv2.threshold(water_gray, 1, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
+    # cv2.imshow('water_bin', water_bin)
+    # cv2.waitKey()
 
     # contour 검출
     val, contours, hierarchy = cv2.findContours(water_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     # 면적이 가장 큰 contour 추출
-    max_area = 0
-    max_index = -1
+    min_area = 1000000
+    min_index = -1
     index = -1
     for i in contours:
         area = cv2.contourArea(i)
         index = index + 1
-        if area > max_area:
-            max_area = area
-            max_index = index
+        if area < min_area:
+            min_area = area
+            min_index = index
 
-    if max_index == -1: # 검출된 contour가 없으면
+    if min_index == -1: # 검출된 contour가 없으면
         return result, box  # 이전 상태 그대로 return
 
     # 원본 이미지에 컨투어 표시
-    cv2.drawContours(result, contours, 1, (0, 255, 0), 3)
+    cv2.drawContours(result, contours, -1, (0, 0, 255), 2)
 
     # 컨투어를 둘러싸는 가장 작은 사각형 그리기
-    cnt = contours[1]
+    cnt = contours[min_index]
     rect = cv2.minAreaRect(cnt)
     box = cv2.boxPoints(rect)
     box = np.int0(box)
-    result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2)
+    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2)
     return result, box
-
-
-'''
-[이미지세그멘테이션] https://webnautes.tistory.com/1281
-[이미지세그멘테이션2] http://www.gisdeveloper.co.kr/?p=6740
-[객체영역분할] https://deep-learning-study.tistory.com/228
-[객체영역분할2] https://jvvp.tistory.com/1085
-[임계값] https://m.blog.naver.com/samsjang/220504782549
-[윤곽선] https://m.blog.naver.com/samsjang/220517391218
-'''
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
 def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
@@ -385,4 +382,3 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 draw_truck(np.array([0, TRUCK_L]), np.array([0, TRUCK_W]), np.array([0, TRUCK_H]))  # 트럭 시각화
 calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck)  # 상자 적재 순서 계산 및 시각화
-
