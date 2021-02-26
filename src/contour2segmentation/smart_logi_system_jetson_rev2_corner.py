@@ -39,14 +39,15 @@ def box_detection(img_color, result, box):
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
-    retval, bin = cv2.threshold(gray, low, 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     # cv2.imshow('bin', bin)
     # cv2.waitKey()
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
-    kernel = np.ones((3,3),np.uint8)
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 2) # 초기 바이너리 이미지로부터
+    kernel = np.ones((5,5),np.uint8)
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
