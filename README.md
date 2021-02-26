@@ -1505,10 +1505,45 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 
 - 모폴리지 연산에서 오프닝과 클로징을 같이 사용하고, 커널 사이즈와 반복 횟수를 늘려주었더니 전경 추출이 훨씬 안정화 됨
 ```python
+# smart_logi_system_jetson_rev2_corner.py
     # 노이즈 제거
     kernel = np.ones((5,5),np.uint8)
     opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
     opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+```
+
+- 전경 추출이 안정화되어 코너 디텍트 방식으로 꼭짓점을 찾는 대신 컨투어링을 사용해봄
+	- 기존 코드보다 컨투어링이 안정되어 있으나, 코너 디텍트 방식보다 불안정함
+	- 다만, 박스의 개수가 화면에 2개 이상 나올 때는 이 코드를 이용해도 나쁘지 않을 듯
+```python
+# smart_logi_system_jetson_rev1_contour.py
+    # contour 검출
+    val, contours, hierarchy = cv2.findContours(water_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 면적이 가장 작은(=박스) 추출
+    min_area = 1000000
+    min_index = -1
+    index = -1
+    for i in contours:
+        area = cv2.contourArea(i)
+        index = index + 1
+        if area < min_area:
+            min_area = area
+            min_index = index
+
+    if min_index == -1: # 검출된 컨투어가 없으면
+        return result, box  # 이전 상태 그대로 반환
+
+    # 원본 이미지에 모든 컨투어 표시
+    cv2.drawContours(result, contours, -1, (0, 0, 255), 2)
+
+    # 컨투어를 둘러싸는 가장 작은 사각형 그리기
+    cnt = contours[min_index]
+    rect = cv2.minAreaRect(cnt)
+    box = cv2.boxPoints(rect)
+    box = np.int0(box)
+    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2)
+    return result, box
 ```
 
 ### Track Bar
