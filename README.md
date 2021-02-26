@@ -1501,7 +1501,7 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 ---
 ## 2021.02.25
 
-### Box Detection using Image Segmentation [완]
+### Box Detection using Image Segmentation [완료]
 
 - 모폴리지 연산에서 오프닝과 클로징을 같이 사용하고, 커널 사이즈와 반복 횟수를 늘려주었더니 전경 추출이 훨씬 안정화 됨
 ```python
