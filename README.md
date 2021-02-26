@@ -1497,3 +1497,24 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
                 NUM_BOX[ord(barcode_data[0]) - 65] += 1
                 print('Info of box: ', box_w, box_l, box_h, box_k)  # 상자의 크기와 무게 출력
 ```
+
+---
+## 2021.02.25
+
+### Box Detection using Image Segmentation
+
+- 모폴리지 연산에서 오프닝과 클로징을 같이 사용하고, 커널 사이즈와 반복 횟수를 늘려주었더니 전경 추출이 훨씬 안정화 됨
+```python
+    # 노이즈 제거
+    kernel = np.ones((5,5),np.uint8)
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+```
+
+### Track Bar
+
+- 아래 코드와 같은 방식으로 이진화 기준(가장 밝은 픽셀 값의 20%) 결정하여 이진화, 따라서 새롭게 업데이트된 코드는 트랙바 사용하지 않음
+- 팀원과 논의 후 트랙바를 삭제할지 그대로 둘지 결정 예정
+```python
+ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(), 255, cv2.THRESH_BINARY)
+```
