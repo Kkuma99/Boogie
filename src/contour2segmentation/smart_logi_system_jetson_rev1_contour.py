@@ -45,9 +45,9 @@ def box_detection(img_color, result, box):
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
-    kernel = np.ones((5,5),np.uint8)
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
-    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    kernel = np.ones((5,5),np.uint8) # 커널사이즈 5로 설정
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 오픈 모폴로지
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 클로징 
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -84,7 +84,7 @@ def box_detection(img_color, result, box):
     # contour 검출
     val, contours, hierarchy = cv2.findContours(water_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 면적이 가장 큰 contour 추출
+    # 면적이 가장 작은 (=박스) 추출
     min_area = 1000000
     min_index = -1
     index = -1
@@ -95,10 +95,10 @@ def box_detection(img_color, result, box):
             min_area = area
             min_index = index
 
-    if min_index == -1: # 검출된 contour가 없으면
-        return result, box  # 이전 상태 그대로 return
+    if min_index == -1: # 검출된 컨투어가 없으면
+        return result, box  # 이전 상태 그대로 반환
 
-    # 원본 이미지에 컨투어 표시
+    # 원본 이미지에 모든 컨투어 표시
     cv2.drawContours(result, contours, -1, (0, 0, 255), 2)
 
     # 컨투어를 둘러싸는 가장 작은 사각형 그리기
