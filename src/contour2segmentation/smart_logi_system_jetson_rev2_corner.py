@@ -45,9 +45,9 @@ def box_detection(img_color, result, box):
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
-    kernel = np.ones((5,5),np.uint8)
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
-    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    kernel = np.ones((5,5),np.uint8) # 커널사이즈 5로 설정
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 오픈 모폴로지 연산
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 클로징 모폴로지 
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
