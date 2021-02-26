@@ -1511,6 +1511,8 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
     opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
     opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
 ```
+![before](/home/nvidia/Desktop/contouring.png)
+![after](/home/nvidia/Desktop/watershed.png)
 
 - 전경 추출이 안정화되어 코너 디텍트 방식으로 꼭짓점을 찾는 대신 컨투어링을 사용해봄
 	- 기존 코드보다 컨투어링이 안정되어 있으나, 코너 디텍트 방식보다 불안정함
