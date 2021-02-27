@@ -1400,7 +1400,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
      4. 리허설 (화)
 
 ---
-## 2021.02.22.
+## 2021.02.23.
 
 ### Box Detection using Image Segmentation
 
@@ -1417,7 +1417,7 @@ https://www.youtube.com/watch?v=ZpQgRdg8RmA 하던 중에
 	- 실행 속도가 아주 느려짐
 
 ---
-## 2021.02.23.
+## 2021.02.24.
 
 ### Box Detection using Image Segmentation
 
@@ -1499,7 +1499,7 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 ```
 
 ---
-## 2021.02.25
+## 2021.02.26
 
 ### Box Detection using Image Segmentation [완료]
 
