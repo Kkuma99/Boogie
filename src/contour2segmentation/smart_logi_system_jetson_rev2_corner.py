@@ -45,9 +45,9 @@ def box_detection(img_color, result, box):
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
-    kernel = np.ones((5,5),np.uint8) # 커널사이즈 5로 설정
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 오픈 모폴로지 연산
-    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터 반복횟수 3번, 클로징 모폴로지 
+    kernel = np.ones((5,5),np.uint8)
+    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 초기 바이너리 이미지로부터
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -102,22 +102,49 @@ def box_detection(img_color, result, box):
     box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
     box = np.int0(box) # 정수형으로 변경
     result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
-    return result, box # 윤곽선 그려진 이미지와 꼭짓점 반환
+    return result, box, water_img # 윤곽선 그려진 이미지와 꼭짓점 반환
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
-def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
-    gray_barcode = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)  # 그레이 스케일로 변환
+def get_box_info(water_img, result, box, barcode_data, inputBox, NUM_BOX):
+    gray_barcode = cv2.cvtColor(water_img, cv2.COLOR_BGR2GRAY)  # 그레이 스케일로 변환
+    retval, bin_barcode = cv2.threshold(gray_barcode, 0.4*gray_barcode.max(), 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
+    kernel = np.ones((5,5),np.uint8)    
+    opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 초기 바이너리 이미지로부터    
+    cv2.imshow('bin_barcode', opening)
+    cv2.waitKey()
+
+    # contour 검출
+    val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 면적이 가장 작은 (=박스) 추출
+    min_area = 1000000
+    min_index = -1
+    index = -1
+    for i in contours:
+        area = cv2.contourArea(i)
+        index = index + 1
+        if area < min_area:
+            min_area = area
+            min_index = index
+    
+    # 원본 이미지에 모든 컨투어 표시
+    cv2.drawContours(result, contours, min_index, (0, 0, 255), 2)
+    cv2.imshow('result', result)
+    cv2.waitKey()
+
+    # 
+    print(min_area)
+    cv2.waitKey()
 
     # 상자가 화면의 중앙에 왔을 때 크기 측정과 바코드 스캔
-    cv2.rectangle(result, (310, 0), (330, 480), (255, 0, 0), 1)
+    cv2.rectangle(result, (310, 0), (330, 480), (255, 0, 0), 1) #
     center = box[1][0] + (box[3][0] - box[1][0]) / 2  # 상자 중심 x좌표
-    # print(center)
 
     if img_color.shape[1] / 2 - 10 <= center <= img_color.shape[1] / 2 + 10:  # 상자가 화면의 중앙 부근에 왔을 때
         decoded = pyzbar.decode(gray_barcode)
         for d in decoded:
-            x, y, w, h = d.rect
-            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            x, y, w, h = d.rect #
+            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 0, 255), 2) #
             barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
             barcode_type = d.type  # 바코드 타입
 
@@ -128,13 +155,11 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 픽셀크기 측정
             box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이
             box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비
-            # print(box_l_pixel)
-            # print(box_w_pixel)
 
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이
             box_w = int(round(box_w_pixel / 35, 0)) # 너비
-            box_h = BOX_H # 높이
+            box_h = (min_area/(640*480))*250 # 높이
             # box_k = int(barcode_data[3:5]) # 무게
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
@@ -351,9 +376,9 @@ while True:
         continue
     result = img_color.copy()  # 화면에 표시하기 위해 img_color를 result에 복사
 
-    result, box = box_detection(img_color, result, box)  # 상자 인식
+    result, box, water_img = box_detection(img_color, result, box)  # 상자 인식
 
-    barcode_data, result = get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX)  # 상자 정보
+    barcode_data, result = get_box_info(water_img, result, box, barcode_data, inputBox, NUM_BOX)  # 상자 정보
     send_data_to_host(barcode_data)  # 바코드 데이터를 Host PC로 전송
 
     cv2.imshow('LOGI', result)  # 화면에 표시
