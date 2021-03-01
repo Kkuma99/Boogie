@@ -1578,7 +1578,7 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 ---
 ## 2021.03.01
 
-### Box Height [완료]
+### Box Height []
 
 - 박스 디텍션 함수에서 객체가 검출된 이미지를 반환하여 바코드 함수에 주고, 이 이미지에 컨투어링을 진행하여 바코드를 검출
 	- 객체가 검출된 이미지를 이진화 후 모폴로지 클로징 연산 적용 *안쪽 검은 바코드는 흰색으로 채워줌
@@ -1654,6 +1654,11 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 ```
 ![bin_barcode](https://user-images.githubusercontent.com/46590578/109465597-c94a0600-7aab-11eb-8f4d-8b3a1f9a4679.png)
 ![result_barcode](https://user-images.githubusercontent.com/46590578/109465641-dbc43f80-7aab-11eb-87fa-0e759fbf55b3.png)
+
+- 오류 발생: 바코드 면적을 제대로 컨투어링 하지 못해서 불안정함
+	- 바코드에 컨투어 처리를 위한 바이너리 이미지가 제대로 생성이 안된 것이 원인
+	- 이진화를 위한 기준을 좀 더 밝은 픽셀이 될 수 있도록 높여주었음
+		- 경계선과 바코드 라벨만 남길 수 있게됨
 
 #### 다음 계획
 
