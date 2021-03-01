@@ -1578,7 +1578,7 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 ---
 ## 2021.03.01
 
-### Box Height []
+### Box Height [완료]
 
 - 박스 디텍션 함수에서 객체가 검출된 이미지를 반환하여 바코드 함수에 주고, 이 이미지에 컨투어링을 진행하여 바코드를 검출
 	- 객체가 검출된 이미지를 이진화 후 모폴로지 클로징 연산 적용 *안쪽 검은 바코드는 흰색으로 채워줌
@@ -1626,7 +1626,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 
         for d in decoded:
             x, y, w, h = d.rect
-            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 255), 2) # 삭제 가능?
+            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 255), 2) # 삭제 가능? 
 
             barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
             barcode_type = d.type  # 바코드 타입
@@ -1642,7 +1642,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
-            box_h = (min_area/(640*480))*250 # 높이 *바코드 면적과 전체화면의 비율로 계산
+            box_h = (min_area/(640*480))*250 # 높이 *바코드 면적과 전체화면의 비율로 계산, 비례상수는 카메라의 높이에 따라 조절 필요
             # box_k = int(barcode_data[3:5]) # 무게
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
@@ -1659,6 +1659,10 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 	- 바코드에 컨투어 처리를 위한 바이너리 이미지가 제대로 생성이 안된 것이 원인
 	- 이진화를 위한 기준을 좀 더 밝은 픽셀이 될 수 있도록 높여주었음
 		- 경계선과 바코드 라벨만 남길 수 있게됨
+
+### 적재 알고리즘 [진행]
+
+-
 
 #### 다음 계획
 
