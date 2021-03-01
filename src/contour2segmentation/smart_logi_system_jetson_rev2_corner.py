@@ -69,7 +69,7 @@ def box_detection(img_color, result, box):
     markers[unknown==255] = 0 # 모르는 부분을 0으로 라벨링
     
     # 전경, 배경에 0 이상의 값, 불명확한 것에 0 -> 이 알고리즘이 불명확한 것을 판단 + 경계선을 -1로
-    markers = cv2.watershedimg_color, markers)
+    markers = cv2.watershed(img_color, markers)
     img_color[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
     # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
@@ -109,7 +109,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     gray_barcode = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY) # 그레이 스케일로 변환
 
     ''' 바코드 면적 계산 '''
-    retval, bin_barcode = cv2.threshold(gray_barcode, 0.4*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     kernel = np.ones((5,5),np.uint8)    
     opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
     cv2.imshow('bin_barcode', opening) # 전처리된 바이너리 이미지 확인
