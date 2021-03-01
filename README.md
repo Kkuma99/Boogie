@@ -1574,3 +1574,90 @@ ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.ma
 	- 현재 적재 알고리즘 적재 창이 아예 뜨지 않거나, 다음 운송지로 넘어갈 때 박스가 계속해서 적재되지 않는 오류 발생
 	- 박스를 번호 순서대로 인식시켜야 적재알고리즘이 제대로 작동하는건가?
 3. 높이와 무게를 고려한 적재 알고리즘으로 수정하기
+
+---
+## 2021.03.01
+
+### Box Height [완료]
+
+- 박스 디텍션 함수에서 객체가 검출된 이미지를 반환하여 바코드 함수에 주고, 이 이미지에 컨투어링을 진행하여 바코드를 검출
+	- 객체가 검출된 이미지를 이진화 후 모폴로지 클로징 연산 적용 *안쪽 검은 바코드는 흰색으로 채워줌
+	- 전처리된 이미지에서 가장 작은 컨투어를 찾아 그 면적(=바코드 라벨이 차지하는 면적)을 알아냄
+	- 이 면적과 전체 화면의 비율을 구한 뒤 비례 상수를 곱하여 높이를 예측 가능
+```python
+# 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
+def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
+    gray_barcode = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY) # 그레이 스케일로 변환
+
+    ''' 바코드 면적 계산 '''
+    retval, bin_barcode = cv2.threshold(gray_barcode, 0.4*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
+    kernel = np.ones((5,5),np.uint8)    
+    opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
+    cv2.imshow('bin_barcode', opening) # 전처리된 바이너리 이미지 확인
+    cv2.waitKey()
+
+    # 컨투어 검출
+    val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 면적이 가장 작은 컨투어(= 바코드 라벨) 추출
+    min_area = 1000000
+    min_index = -1
+    index = -1
+    for i in contours:
+        area = cv2.contourArea(i)
+        index = index + 1
+        if area < min_area:
+            min_area = area
+            min_index = index
+    
+    # 결과 이미지에 바코드 컨투어 표시
+    cv2.drawContours(result, contours, min_index, (0, 0, 255), 2)
+    cv2.imshow('result_barcode', result) # 바코드 컨투어 표시된 이미지 확인
+    print(min_area) # 바코드 면적 확인
+    cv2.waitKey()
+
+    ''' 바코드 정보 읽어오기 '''
+    cv2.rectangle(result, (310, 0), (330, 480), (255, 0, 0), 1) # 화면 중앙 표시
+    center = box[1][0] + (box[3][0] - box[1][0]) / 2  # 상자 중심 X 좌표
+
+    if img_color.shape[1] / 2 - 10 <= center <= img_color.shape[1] / 2 + 10:  # 상자가 화면의 중앙 부근에 왔을 때
+        
+        decoded = pyzbar.decode(gray_barcode) # 바코드 스캔
+
+        for d in decoded:
+            x, y, w, h = d.rect
+            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 255), 2) # 삭제 가능?
+
+            barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
+            barcode_type = d.type  # 바코드 타입
+
+            # 화면에 바코드 정보 띄우기
+            text = '%s (%s)' % (barcode_data[0:3], barcode_type)
+            cv2.putText(result, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
+
+            # 박스 픽셀크기 측정
+            box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이(가로)
+            box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비(세로)
+
+            # 박스 실제크기 계산
+            box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
+            box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
+            box_h = (min_area/(640*480))*250 # 높이 *바코드 면적과 전체화면의 비율로 계산
+            # box_k = int(barcode_data[3:5]) # 무게
+
+            if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
+                inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h} # 박스의 정보 담아주기
+                NUM_BOX[ord(barcode_data[0]) - 65] += 1 # 박스의 개수 하나 늘려주기
+                print('Size of box: ', box_w, box_l, box_h)  # 상자의 정보 출력
+
+    return barcode_data, result
+```
+![bin_barcode](https://user-images.githubusercontent.com/46590578/109465597-c94a0600-7aab-11eb-8f4d-8b3a1f9a4679.png)
+![result_barcode](https://user-images.githubusercontent.com/46590578/109465641-dbc43f80-7aab-11eb-87fa-0e759fbf55b3.png)
+
+#### 다음 계획
+
+1. 적재 알고리즘 이해하고, 오류 원인 찾아내기
+	- 현재 적재 알고리즘 적재 창이 아예 뜨지 않거나, 다음 운송지로 넘어갈 때 박스가 계속해서 적재되지 않는 오류 발생
+	- 박스를 번호 순서대로 인식시켜야 적재알고리즘이 제대로 작동하는건가?
+2. 높이와 무게를 고려한 적재 알고리즘으로 수정하기
