@@ -48,11 +48,11 @@ def box_detection(img_color, result, box):
     kernel = np.ones((5,5),np.uint8) # 커널 크기는 5*5
     opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 오프닝 연산으로 배경 노이즈 제거
     opening = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
-    cv2.imshow('opening', opening) # 생성된 바이너리 이미지 확인
+    cv2.imshow('opening', opening) # 모폴로지 연산 후 생성된 바이너리 이미지 확인
     cv2.waitKey()
 
     # 확실한 배경 확보
-    sure_bg = cv2.dilate(opening,kernel,iterations=5) 
+    sure_bg = cv2.dilate(opening,kernel,iterations=3) 
 
     # 뼈대 이미지
     dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
@@ -80,7 +80,7 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 50, 0.01, 10)
+    corners = cv2.goodFeaturesToTrack(img_gray, 40, 0.01, 10)
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
@@ -114,7 +114,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     kernel = np.ones((5,5),np.uint8)    
     opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
-    # cv2.imshow('bin_barcode', opening) # 전처리된 바이너리 이미지 확인
+    # cv2.imshow('bin+mor_barcode', opening) # 전처리된 바이너리 이미지 확인
     # cv2.waitKey()
 
     # 컨투어 검출
