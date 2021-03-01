@@ -40,17 +40,19 @@ def box_detection(img_color, result, box):
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
     retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    # cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
-    # cv2.waitKey()
+    cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
+    cv2.waitKey()
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
     kernel = np.ones((5,5),np.uint8) # 커널 크기는 5*5
     opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 오프닝 연산으로 배경 노이즈 제거
-    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
+    opening = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
+    cv2.imshow('opening', opening) # 생성된 바이너리 이미지 확인
+    cv2.waitKey()
 
     # 확실한 배경 확보
-    sure_bg = cv2.dilate(opening,kernel,iterations=3) 
+    sure_bg = cv2.dilate(opening,kernel,iterations=5) 
 
     # 뼈대 이미지
     dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
@@ -72,13 +74,13 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(img_color, markers)
     img_color[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
-    # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
-    # cv2.waitKey()
+    cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
+    cv2.waitKey()
 
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 40, 0.01, 10)
+    corners = cv2.goodFeaturesToTrack(img_gray, 50, 0.01, 10)
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
@@ -101,7 +103,7 @@ def box_detection(img_color, result, box):
     ''' 결과 반환 '''
     box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
     box = np.int0(box) # 정수형으로 변경
-    result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
     return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
@@ -112,8 +114,8 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     kernel = np.ones((5,5),np.uint8)    
     opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
-    cv2.imshow('bin_barcode', opening) # 전처리된 바이너리 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('bin_barcode', opening) # 전처리된 바이너리 이미지 확인
+    # cv2.waitKey()
 
     # 컨투어 검출
     val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -131,9 +133,9 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     
     # 결과 이미지에 바코드 컨투어 표시
     cv2.drawContours(result, contours, min_index, (0, 0, 255), 2)
-    cv2.imshow('result_barcode', result) # 바코드 컨투어 표시된 이미지 확인
-    print(min_area) # 바코드 면적 확인
-    cv2.waitKey()
+    # cv2.imshow('result_barcode', result) # 바코드 컨투어 표시된 이미지 확인
+    # print(min_area) # 바코드 면적 확인
+    # cv2.waitKey()
 
     ''' 바코드 정보 읽어오기 '''
     cv2.rectangle(result, (310, 0), (330, 480), (255, 0, 0), 1) # 화면 중앙 표시
@@ -161,7 +163,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
-            box_h = (min_area/(640*480))*250 # 높이 *바코드 면적과 전체화면의 비율로 계산
+            box_h = int(round((min_area/(640*480))*250)) # 높이 *바코드 면적과 전체화면의 비율로 계산
             # box_k = int(barcode_data[3:5]) # 무게
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
