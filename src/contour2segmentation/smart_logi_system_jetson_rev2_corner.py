@@ -61,7 +61,7 @@ def box_detection(img_color, result, box):
     #  확실한 전경 확보
     ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
     sure_fg = np.uint8(sure_fg)
-    sure_fg = cv2.dilate(sure_fg, kernel, iterations = 3)
+    sure_fg = cv2.dilate(sure_fg, kernel, iterations = 3) # 전경을 확대해줌
     # cv2.imshow('sure_fg', sure_fg)
     # cv2.waitKey()    
 
@@ -75,7 +75,7 @@ def box_detection(img_color, result, box):
     
     # 전경, 배경에 0 이상의 값, 불명확한 것에 0 -> 이 알고리즘이 불명확한 것을 판단 + 경계선을 -1로
     markers = cv2.watershed(img_color, markers)
-    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분은 흰색으로
+    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분은 검정색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
     # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
     # cv2.waitKey()
@@ -83,7 +83,7 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5)
+    corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
@@ -103,15 +103,16 @@ def box_detection(img_color, result, box):
                 pos[6] = x
                 pos[7] = y
         # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2)
-    # cv2.imshow('corner', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
+        
+    # cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
     # cv2.waitKey()
-    	
 
     ''' 결과 반환 '''
     box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
     box = np.int0(box) # 정수형으로 변경
     result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
     return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
+
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
 def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
@@ -120,14 +121,14 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     ''' 바코드 면적 계산 '''
     retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     kernel = np.ones((5,5),np.uint8)
-    opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
+    opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽을 채워줌
     # cv2.imshow('bin+mor_barcode', opening) # 전처리된 바이너리 이미지 확인
     # cv2.waitKey()
 
     # 컨투어 검출
     val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 면적이 가장 작은 컨투어(= 바코드 라벨) 추출
+    # 면적이 가장 큰 컨투어(= 바코드 라벨) 추출
     max_area = 0
     max_index = -1
     index = -1
@@ -343,6 +344,7 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
 
 
 # ------------------------------------------------------------ main ------------------------------------------------------------
+
 
 # Number of locals and boxes
 NUM_LOCAL = 3
