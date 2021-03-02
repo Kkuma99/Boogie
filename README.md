@@ -1734,6 +1734,10 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
 ```
 
+#### 
+
+![solve_error](https://user-images.githubusercontent.com/46590578/109659649-3b554480-7bab-11eb-9c9d-928d47d0e844.png)
+
 #### 다음 할 일
 
 1. 적재 알고리즘 이해하기
