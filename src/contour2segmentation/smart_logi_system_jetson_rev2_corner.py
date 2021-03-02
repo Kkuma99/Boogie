@@ -40,16 +40,16 @@ def box_detection(img_color, result, box):
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
     retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
+    # cv2.waitKey()
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
     kernel = np.ones((5,5),np.uint8) # 커널 크기는 5*5
-    opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 오프닝 연산으로 배경 노이즈 제거
-    opening = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
-    cv2.imshow('opening', opening) # 모폴로지 연산 후 생성된 바이너리 이미지 확인
-    cv2.waitKey()
+    # opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 오프닝 연산으로 배경 노이즈 제거
+    opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
+    # cv2.imshow('opening', opening) # 모폴로지 연산 후 생성된 바이너리 이미지 확인
+    # cv2.waitKey()
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -61,6 +61,9 @@ def box_detection(img_color, result, box):
     #  확실한 전경 확보
     ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
     sure_fg = np.uint8(sure_fg)
+    sure_fg = cv2.dilate(sure_fg, kernel, iterations = 3)
+    # cv2.imshow('sure_fg', sure_fg)
+    # cv2.waitKey()    
 
     # 확실한 배경 - 확실한 전경 = 모르는 부분
     unknown = cv2.subtract(sure_bg,sure_fg) 
@@ -74,8 +77,8 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(img_color, markers)
     img_color[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
-    cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
+    # cv2.waitKey()
 
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
