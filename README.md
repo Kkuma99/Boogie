@@ -1681,3 +1681,49 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 	- 현재 적재 알고리즘 적재 창이 아예 뜨지 않거나, 다음 운송지로 넘어갈 때 박스가 계속해서 적재되지 않는 오류 발생
 	- 박스를 번호 순서대로 인식시켜야 적재 알고리즘이 제대로 작동하는건가?
 2. 높이와 무게를 고려한 적재 알고리즘으로 수정하기
+
+---
+
+## 2021.03.02
+
+### 오류1: 박스의 크기가 작은 경우, 박스가 아닌 바코드를 객체로 인식
+
+- 원인: 박스의 크기가 작은 경우에, 워터셰드 알고리즘을 적용하기 위한 재료가 되는 전경을 바코드 라벨로 잡아서 그렇다.
+- 해결: 재료가 되는 전경을 Dilation 연산을 통해서 확대시켜줌
+```python
+    #  확실한 전경 확보
+    ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
+    sure_fg = np.uint8(sure_fg)
+    sure_fg = cv2.dilate(sure_fg, kernel, iterations = 3)
+```
+
+### 오류2: 박스를 제대로 검출하더라도, 바코드의 윤곽을 제대로 잡지 못함
+
+- 원인: 워터셰드 알고리즘을 적용할 때, 외곽선이 흰색으로 그려지면서 이게 바코드 라벨 컨투어링에 영향을 줌
+- 해결: 
+	- 워터셰드 알고리즘을 적용할 때 그려지는 외곽선의 색을 검정으로 변경
+	- 가장 처음의 바이너리 이미지에 적용하는 모폴로지 연산은 클로징 연산만 적용
+	- 면적이 가장 큰 컨투어를 검출
+```python
+    # 전경, 배경에 0 이상의 값, 불명확한 것에 0 -> 이 알고리즘이 불명확한 것을 판단 + 경계선을 -1로
+    markers = cv2.watershed(img_color, markers)
+    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분은 검정색으로
+    img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
+```
+```python
+    # 면적이 가장 큰 컨투어(= 바코드 라벨) 추출
+    max_area = 0
+    max_index = -1
+    index = -1
+    for i in contours:
+        area = cv2.contourArea(i)
+        index = index + 1
+        if area > max_area:
+            max_area = area
+            max_index = index
+    
+    # 결과 이미지에 바코드 컨투어 표시
+    cv2.drawContours(result, contours, max_index, (0, 0, 255), 2)
+```
+
+### 오류3: 코너 디텍트로 꼭짓점을 잡는 것에 대한 불안정함
