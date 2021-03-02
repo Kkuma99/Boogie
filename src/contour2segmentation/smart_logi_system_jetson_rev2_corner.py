@@ -83,7 +83,7 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 40, 0.01, 10)
+    corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5)
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
@@ -101,12 +101,16 @@ def box_detection(img_color, result, box):
                 pos[5] = y
             if x > pos[6]: # X의 최대 좌표 찾기 (오른쪽 상단)
                 pos[6] = x
-                pos[7] = y	
+                pos[7] = y
+        # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2)
+    # cv2.imshow('corner', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
+    # cv2.waitKey()
+    	
 
     ''' 결과 반환 '''
     box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
     box = np.int0(box) # 정수형으로 변경
-    result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+    result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
     return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
