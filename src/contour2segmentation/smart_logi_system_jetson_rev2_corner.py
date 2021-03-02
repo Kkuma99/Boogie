@@ -75,7 +75,7 @@ def box_detection(img_color, result, box):
     
     # 전경, 배경에 0 이상의 값, 불명확한 것에 0 -> 이 알고리즘이 불명확한 것을 판단 + 경계선을 -1로
     markers = cv2.watershed(img_color, markers)
-    img_color[markers == -1] = [255, 255, 255] # 객체의 외곽부분은 흰색으로
+    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분은 흰색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
     # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
     # cv2.waitKey()
@@ -115,7 +115,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 
     ''' 바코드 면적 계산 '''
     retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    kernel = np.ones((5,5),np.uint8)    
+    kernel = np.ones((5,5),np.uint8)
     opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽은 채워줌
     # cv2.imshow('bin+mor_barcode', opening) # 전처리된 바이너리 이미지 확인
     # cv2.waitKey()
@@ -124,20 +124,20 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     # 면적이 가장 작은 컨투어(= 바코드 라벨) 추출
-    min_area = 1000000
-    min_index = -1
+    max_area = 0
+    max_index = -1
     index = -1
     for i in contours:
         area = cv2.contourArea(i)
         index = index + 1
-        if area < min_area:
-            min_area = area
-            min_index = index
+        if area > max_area:
+            max_area = area
+            max_index = index
     
     # 결과 이미지에 바코드 컨투어 표시
-    cv2.drawContours(result, contours, min_index, (0, 0, 255), 2)
+    cv2.drawContours(result, contours, max_index, (0, 0, 255), 2)
     # cv2.imshow('result_barcode', result) # 바코드 컨투어 표시된 이미지 확인
-    # print(min_area) # 바코드 면적 확인
+    # print(max_area) # 바코드 면적 확인
     # cv2.waitKey()
 
     ''' 바코드 정보 읽어오기 '''
@@ -166,7 +166,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
-            box_h = int(round((min_area/(640*480))*250)) # 높이 *바코드 면적과 전체화면의 비율로 계산
+            box_h = int(round((max_area/(640*480))*250)) # 높이 *바코드 면적과 전체화면의 비율로 계산
             # box_k = int(barcode_data[3:5]) # 무게
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
