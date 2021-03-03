@@ -70,7 +70,7 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 150, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
+    corners = cv2.goodFeaturesToTrack(img_gray, 300, 0.01, 3) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
