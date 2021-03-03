@@ -62,7 +62,7 @@ def box_detection(img_color, result, box):
     
     # 전경, 배경에 0 이상의 값, 불명확한 것에 0 -> 이 알고리즘이 불명확한 것을 판단 + 경계선을 -1로
     markers = cv2.watershed(img_color, markers)
-    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분은 검정색으로
+    img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분 검정색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
     # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
     # cv2.waitKey()
@@ -89,7 +89,7 @@ def box_detection(img_color, result, box):
             if x > pos[6]: # X의 최대 좌표 찾기 (오른쪽 상단)
                 pos[6] = x
                 pos[7] = y
-        # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2)
+        # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2) # 코너에 원으로 표시
         
     # cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
     # cv2.waitKey()
@@ -109,13 +109,13 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
     retval, bin_barcode = cv2.threshold(gray_barcode, 0.7*gray_barcode.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     kernel = np.ones((5,5),np.uint8)
     opening = cv2.morphologyEx(bin_barcode,cv2.MORPH_CLOSE,kernel, iterations = 3) # 바코드 라벨 컨투어 추출 위해 안쪽을 채워줌
-    # cv2.imshow('bin+mor_barcode', opening) # 전처리된 바이너리 이미지 확인
+    # cv2.imshow('barcode', opening) # 전처리된 바이너리 이미지 확인
     # cv2.waitKey()
 
     # 컨투어 검출
     val, contours, hierarchy = cv2.findContours(opening, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 면적이 가장 큰 컨투어(= 바코드 라벨) 추출
+    # 면적이 가장 큰 컨투어(=바코드) 추출
     max_area = 0
     max_index = -1
     index = -1
@@ -142,7 +142,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 
         for d in decoded:
             x, y, w, h = d.rect
-            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 255), 2) # 삭제 가능?
+            cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 255), 2)
 
             barcode_data = d.data.decode("utf-8")  # 바코드 인식 결과
             barcode_type = d.type  # 바코드 타입
@@ -158,11 +158,11 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
-            box_h = int(round((max_area/(640*480))*300)) # 높이 *바코드 면적과 전체화면의 비율로 계산
-            print(box_h)
-            box_k = 20
+            box_h = int(round((max_area/(640*480))*300, 0)) # 높이 *바코드 면적과 전체화면의 비율에 비례상수 곱하여 계산
+            box_k = 20 # 무게
             # box_k = int(barcode_data[3:5]) # 무게
-
+            # print(box_h)
+            
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h, 'k': box_k} # 박스의 정보 담아주기
                 NUM_BOX[ord(barcode_data[0]) - 65] += 1 # 박스의 개수 하나 늘려주기
@@ -185,28 +185,28 @@ def draw_truck(x_range, y_range, z_range):
 # 적재 순서를 계산하는 알고리즘을 수행하는 함수
 def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck):
 
-    # 각 지역별 상자의 개수만큼 check 생성(check에 각 상자의 적재 여부 저장)
+    # 각 지역별 상자의 개수만큼 배열 생성(각 상자의 적재 여부 저장)
     check = []
     for i in range(0, NUM_LOCAL):
         check.append([])
         for j in range(0, NUM_BOX[i]):
-            check[i].append(0)
+            check[i].append(0) # 0으로 초기화
 
     sum_num_box = 0  # 각 지역별 적재 범위를 계산하기 위함
     finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장할 변수
 
-    ## 측정을 위한 변수
+    # 측정을 위한 변수
     count_W = 0  # 상자를 적재할 빈 공간의 너비를 측정하기 위한 변수
     count_L = 0  # 막힌 공간의 길이를 측정하기 위한 변수
     count_H = 0  # 막힌 공간의 높이를 측정하기 위한 변수
 
-    ## Loading Box
+    ## 상자 적재
     for i in range(NUM_LOCAL):  # 각 지역별로 수행
         floor = 0  # 현재 적재하고 있는 층수
         sum_num_box += NUM_BOX[i]  # 앞 지역부터 상자의 개수를 더함
  
         while True:
-            if finish[i] == NUM_BOX[i]:  # 해당 지역 상자들의 적재가 끝나기 전까지 반복
+            if finish[i] == NUM_BOX[i]:  # 해당 지역 상자들의 적재가 끝나면 종료
                 break
 
             # endOfL(현재 층에서 가장 작은 길이를 측정하기 위한 변수) 계산
@@ -344,21 +344,21 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
 # ------------------------------------------------------------ main ------------------------------------------------------------
 
 
-# Number of locals and boxes
-NUM_LOCAL = 3
+# 운송지와 박스의 개수
+NUM_LOCAL = 3 # A, B, C
 NUM_BOX = [0, 0, 0]  # 각 지역별 상자 개수
-
-BOX_H = 5  # 상자 높이 5
-box = ()
-
-inputBox = {}
-for i in range(0, NUM_LOCAL):
-    inputBox[i] = {}
 
 # 배송 지역
 LOCAL_A = 0
 LOCAL_B = 1
 LOCAL_C = 2
+
+# 박스 정보
+BOX_H = 5 # 상자 높이
+box = ()  # 박스의 윤곽을 그리기 위한 튜플
+inputBox = {} # 박스의 정보를 담는 딕셔너리
+for i in range(0, NUM_LOCAL):
+    inputBox[i] = {}
 
 # 트럭의 크기, 상태
 TRUCK_L = 30  # x
@@ -370,19 +370,17 @@ truck = np.zeros((TRUCK_L, TRUCK_W, TRUCK_H), dtype=np.int8)
 barcode_data = "XXX"
 
 # Read image (640*480)
-cap = cv2.VideoCapture('/dev/video1')  # 내장 camera인 경우: 0 / USB camera인 경우: 1
-cap.set(cv2.CAP_PROP_FPS, 30)  # FPS(프레임속도) 30으로 설정
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 640으로 설정
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 프레임 높이 480으로 설정
+cap = cv2.VideoCapture('/dev/video1')  # 내장카메라: 0 / USB카메라: 1
+cap.set(cv2.CAP_PROP_FPS, 30)          # 프레임속도 30으로 설정
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)     # 프레임 너비 640으로 설정
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)    # 프레임 높이 480으로 설정
 cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL) # 화면 설정
 
-# 지속적인 영상처리를 위한 while문
+# 지속적인 영상처리를 위한 루프
 while True:
     ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
-    # 캡처에 실패할 경우 다시 반복문의 첫 줄부터 수행하도록 함
-    if not ret:
-        continue
-    result = img_color.copy()  # 화면에 표시하기 위해 img_color를 result에 복사
+    if not ret: continue  # 캡처에 실패할 경우 반복문의 첫 줄부터 수행하도록 함
+    result = img_color.copy()  # 화면에 표시하기 위해 원본 이미지를 결과 이미지에 복사
 
     result, box = box_detection(img_color, result, box)  # 상자 인식
     barcode_data, result = get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX)  # 상자 정보
