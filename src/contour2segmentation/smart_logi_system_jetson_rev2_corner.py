@@ -21,24 +21,11 @@ def send_data_to_host(boxData):
         rate.sleep()
 
 
-# 트랙바를 위한 더미 함수
-def nothing(x):
-    pass
-
-
-# 카메라로 받아오는 영상을 표시할 화면을 설정하는 함수
-def set_window():
-    cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL)
-    cv2.createTrackbar('threshold', 'LOGI', 0, 255, nothing)  # 트랙바 생성
-    cv2.setTrackbarPos('threshold', 'LOGI', 50)  # 트랙바의 초기값 지정
-
-
 # 상자 인식 알고리즘을 수행하는 함수
 def box_detection(img_color, result, box):
     ''' 초기 설정 '''
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
-    low = cv2.getTrackbarPos('threshold', 'LOGI')    # 트랙바의 현재값을 가져옴
     retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
     # cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
     # cv2.waitKey()
@@ -83,7 +70,7 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
+    corners = cv2.goodFeaturesToTrack(img_gray, 150, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
     pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
@@ -171,13 +158,15 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
-            box_h = int(round((max_area/(640*480))*250)) # 높이 *바코드 면적과 전체화면의 비율로 계산
+            box_h = int(round((max_area/(640*480))*300)) # 높이 *바코드 면적과 전체화면의 비율로 계산
+            print(box_h)
+            box_k = 20
             # box_k = int(barcode_data[3:5]) # 무게
 
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
-                inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h} # 박스의 정보 담아주기
+                inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h, 'k': box_k} # 박스의 정보 담아주기
                 NUM_BOX[ord(barcode_data[0]) - 65] += 1 # 박스의 개수 하나 늘려주기
-                print('Size of box: ', box_w, box_l, box_h)  # 상자의 정보 출력
+                print('Info of box: ', box_w, box_l, box_h, box_k)  # 상자의 정보 출력
 
     return barcode_data, result
 
@@ -187,6 +176,7 @@ def draw_truck(x_range, y_range, z_range):
     yy, zz = np.meshgrid(y_range, z_range)
     ax.plot_wireframe(x_range[0], yy, zz, color="black")
     ax.plot_wireframe(x_range[1], yy, zz, color="black")
+
     xx, zz = np.meshgrid(x_range, z_range)
     ax.plot_wireframe(xx, y_range[0], zz, color="black")
     ax.plot_wireframe(xx, y_range[1], zz, color="black")
@@ -194,22 +184,27 @@ def draw_truck(x_range, y_range, z_range):
 
 # 적재 순서를 계산하는 알고리즘을 수행하는 함수
 def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck):
+
     # 각 지역별 상자의 개수만큼 check 생성(check에 각 상자의 적재 여부 저장)
     check = []
     for i in range(0, NUM_LOCAL):
         check.append([])
         for j in range(0, NUM_BOX[i]):
             check[i].append(0)
+
     sum_num_box = 0  # 각 지역별 적재 범위를 계산하기 위함
     finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장할 변수
+
     ## 측정을 위한 변수
     count_W = 0  # 상자를 적재할 빈 공간의 너비를 측정하기 위한 변수
     count_L = 0  # 막힌 공간의 길이를 측정하기 위한 변수
     count_H = 0  # 막힌 공간의 높이를 측정하기 위한 변수
+
     ## Loading Box
     for i in range(NUM_LOCAL):  # 각 지역별로 수행
         floor = 0  # 현재 적재하고 있는 층수
         sum_num_box += NUM_BOX[i]  # 앞 지역부터 상자의 개수를 더함
+ 
         while True:
             if finish[i] == NUM_BOX[i]:  # 해당 지역 상자들의 적재가 끝나기 전까지 반복
                 break
@@ -301,8 +296,10 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
                                 truck[pos_X + x][pos_Y + y][pos_Z + z] = 4  # B 지역은 4 할당
                             else:
                                 truck[pos_X + x][pos_Y + y][pos_Z + z] = 5  # C 지역은 5 할당
+
                 finish[i] += 1  # 적재 완료된 상자 수 갱신
                 check[i][boxIndex] = 1  # 적재 완료된 상자 체크
+
                 # 상자의 시각화
                 # 밑면
                 side = Rectangle((pos_X, pos_Y), inputBox[i][boxIndex]['l'], inputBox[i][boxIndex]['w'], fill=True,
@@ -338,6 +335,7 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
                 plt.pause(0.0001)
                 print("This Box is [%s%02d]" % (chr(i + 65), boxIndex))  # 현재 적재한 상자의 정보를 화면에 출력
                 input("Press Enter to load next box")  # Enter 키를 입력하면 다음 상자를 적재
+
     print("Finish loading all your boxes!")
     plt.draw()  # 마지막으로 plot
     plt.pause(60)  # 1분간 유지
@@ -350,36 +348,33 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
 NUM_LOCAL = 3
 NUM_BOX = [0, 0, 0]  # 각 지역별 상자 개수
 
+BOX_H = 5  # 상자 높이 5
+box = ()
+
+inputBox = {}
+for i in range(0, NUM_LOCAL):
+    inputBox[i] = {}
+
 # 배송 지역
 LOCAL_A = 0
 LOCAL_B = 1
 LOCAL_C = 2
 
-# 트럭의 크기
+# 트럭의 크기, 상태
 TRUCK_L = 30  # x
 TRUCK_W = 15  # y
 TRUCK_H = 15  # z
-
-# Boxes to load
-inputBox = {}
-box = ()    # box 좌표 저장
-BOX_H = 5  # 상자 높이를 5cm로 고정 -> 높이 비례 상수
-for i in range(0, NUM_LOCAL):
-    inputBox[i] = {}
-
-## 트럭의 상태
 truck = np.zeros((TRUCK_L, TRUCK_W, TRUCK_H), dtype=np.int8)
 
 # 바코드 데이터 초기화
 barcode_data = "XXX"
 
-# Read image(640*480)
+# Read image (640*480)
 cap = cv2.VideoCapture('/dev/video1')  # 내장 camera인 경우: 0 / USB camera인 경우: 1
 cap.set(cv2.CAP_PROP_FPS, 30)  # FPS(프레임속도) 30으로 설정
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 640으로 설정
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 프레임 높이 480으로 설정
-
-set_window() # 화면 설정
+cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL) # 화면 설정
 
 # 지속적인 영상처리를 위한 while문
 while True:
@@ -390,10 +385,8 @@ while True:
     result = img_color.copy()  # 화면에 표시하기 위해 img_color를 result에 복사
 
     result, box = box_detection(img_color, result, box)  # 상자 인식
-
     barcode_data, result = get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX)  # 상자 정보
     send_data_to_host(barcode_data)  # 바코드 데이터를 Host PC로 전송
-
     cv2.imshow('LOGI', result)  # 화면에 표시
 
     if cv2.waitKey(1) & 0xFF == 27:  # 1초 단위로 update되며, ESC키를 누르면 탈출하여 종료
