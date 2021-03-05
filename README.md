@@ -1828,6 +1828,8 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 ### 박스 크기 읽기 오류 수정
 
 - 원인: 왼쪽 상단은 Y좌표의 최솟값, 왼쪽 하단은 X좌표의 최솟값, 오른쪽 하단은 Y좌표의 최댓값, 오른쪽 상단은 X좌표의 최댓값으로 꼭짓점을 찾도록 설정했는데, 박스가 카메라에 잡히는 모습에 따라 항상 이 방법이 통하지는 않는다.
+![corner_error](https://user-images.githubusercontent.com/46590578/110129987-e2381b80-7e0b-11eb-9153-3b83f1aeeb9f.png)
+![corner_error_result](https://user-images.githubusercontent.com/46590578/110130040-efeda100-7e0b-11eb-95cc-23d7827ed640.png)
 
 - ~~해결시도1: 전경을 검출한 후 전경을 바이너리 이미지로 변경 -> 모폴로지 클로징 연산 -> 윤곽선 검출 -> 윤곽선으로 사각형 그리고 꼭짓점 얻기~~
 	- 윤곽선을 가지고 사각형을 그리는 것이기 때문에 정확한 박스의 꼭짓점 얻을 수 없음
