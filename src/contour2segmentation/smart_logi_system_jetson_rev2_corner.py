@@ -27,16 +27,16 @@ def box_detection(img_color, result, box):
     blurred = cv2.GaussianBlur(img_color, (5, 5), 0) # 가우시안 블러 적용
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY) # 그레이스케일로 변환
     retval, bin = cv2.threshold(gray, 0.2*gray.max(), 255, cv2.THRESH_BINARY) # 바이너리 이미지 생성
-    cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('bin', bin) # 생성된 바이너리 이미지 확인
+    # cv2.waitKey()
 
     ''' 이미지 세그멘테이션 '''
     # 노이즈 제거
     kernel = np.ones((5,5),np.uint8) # 커널 크기는 5*5
     # opening = cv2.morphologyEx(bin,cv2.MORPH_OPEN,kernel, iterations = 3) # 오프닝 연산으로 배경 노이즈 제거
     opening = cv2.morphologyEx(bin,cv2.MORPH_CLOSE,kernel, iterations = 3) # 클로징 연산으로 객체 내부 노이즈 제거
-    cv2.imshow('opening', opening) # 모폴로지 연산 후 생성된 바이너리 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('opening', opening) # 모폴로지 연산 후 생성된 바이너리 이미지 확인
+    # cv2.waitKey()
 
     # 확실한 배경 확보
     sure_bg = cv2.dilate(opening,kernel,iterations=3) 
@@ -49,8 +49,8 @@ def box_detection(img_color, result, box):
     ret, sure_fg = cv2.threshold(result_dist_transform, 0.7*result_dist_transform.max(),255, cv2.THRESH_BINARY)
     sure_fg = np.uint8(sure_fg)
     sure_fg = cv2.dilate(sure_fg, kernel, iterations = 3) # 전경을 확대해줌
-    cv2.imshow('sure_fg', sure_fg)
-    cv2.waitKey()    
+    # cv2.imshow('sure_fg', sure_fg)
+    # cv2.waitKey()    
 
     # 확실한 배경 - 확실한 전경 = 모르는 부분
     unknown = cv2.subtract(sure_bg,sure_fg) 
@@ -64,8 +64,8 @@ def box_detection(img_color, result, box):
     markers = cv2.watershed(img_color, markers)
     img_color[markers == -1] = [0, 0, 0] # 객체의 외곽부분 검정색으로
     img_color[markers == 1] = [0, 0, 0] # 배경 부분은 검정색으로, 객체는 원래 색 그대로
-    cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('foreground', img_color) # 알고리즘 적용되어 객체만 추출된 이미지 확인
+    # cv2.waitKey()
 
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
@@ -89,10 +89,10 @@ def box_detection(img_color, result, box):
             if x > pos[6]: # X의 최대 좌표 찾기 (오른쪽 상단)
                 pos[6] = x
                 pos[7] = y
-        cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2) # 코너에 원으로 표시
+        # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2) # 코너에 원으로 표시
         
-    cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
-    cv2.waitKey()
+    # cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
+    # cv2.waitKey()
 
     ''' 결과 반환 '''
     box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
@@ -154,7 +154,7 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             # 박스 픽셀크기 측정
             box_l_pixel = round(np.sqrt((box[2][0] - box[1][0]) ** 2 + (box[1][1] - box[2][1]) ** 2), 0)  # 상자의 픽셀 길이(가로)
             box_w_pixel = round(np.sqrt((box[0][0] - box[1][0]) ** 2 + (box[0][1] - box[1][1]) ** 2), 0)  # 상자의 픽셀 너비(세로)
-
+            
             # 박스 실제크기 계산
             box_l = int(round(box_l_pixel / 35, 0)) # 길이(가로)
             box_w = int(round(box_w_pixel / 35, 0)) # 너비(세로)
@@ -162,7 +162,8 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
             box_k = 20 # 무게
             # box_k = int(barcode_data[3:5]) # 무게
             # print(box_h)
-            
+            # if box_l <= 1 or box_w <= 1: continue  # 
+
             if not int(barcode_data[1:3]) in inputBox[ord(barcode_data[0]) - 65]:  # 중복되는 데이터가 없다면
                 inputBox[ord(barcode_data[0]) - 65][int(barcode_data[1:3])] = {'l': box_l, 'w': box_w, 'h': box_h, 'k': box_k} # 박스의 정보 담아주기
                 NUM_BOX[ord(barcode_data[0]) - 65] += 1 # 박스의 개수 하나 늘려주기
