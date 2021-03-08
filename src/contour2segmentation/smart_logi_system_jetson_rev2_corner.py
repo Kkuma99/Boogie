@@ -90,15 +90,50 @@ def box_detection(img_color, result, box):
                 pos[6] = x
                 pos[7] = y
         # cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2) # 코너에 원으로 표시
-        
+
     # cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
     # cv2.waitKey()
+    
+    # print(pos)
+    # cv2.waitKey()
 
-    ''' 결과 반환 '''
-    box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
-    box = np.int0(box) # 정수형으로 변경
-    result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
-    return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
+    if abs(pos[5]-pos[7]) <= 30:
+        # 컨투어 검출
+        retval, img_bin = cv2.threshold(img_gray, 1, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
+        val, contours, hierarchy = cv2.findContours(img_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+        # 면적이 가장 작은 컨투어(=박스) 추출
+        min_area = 1000000
+        min_index = -1
+        index = -1
+        for i in contours:
+            area = cv2.contourArea(i)
+            index = index + 1
+            if area < min_area:
+                min_area = area
+                min_index = index
+
+        if min_index == -1: # 검출된 컨투어가 없으면
+            return result, box  # 이전 상태 그대로 반환
+
+        # 결과 이미지에 컨투어 표시
+        cv2.drawContours(result, contours, min_index, (0, 255, 0), 2)
+
+        ''' 결과 반환 '''
+        # 컨투어를 둘러싸는 가장 작은 사각형 그리기
+        cnt = contours[min_index]
+        rect = cv2.minAreaRect(cnt)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box) # 정수형으로 변경
+        result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+        return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
+
+    else:
+        ''' 결과 반환 '''
+        box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
+        box = np.int0(box) # 정수형으로 변경
+        result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+        return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
 
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
