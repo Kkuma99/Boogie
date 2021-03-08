@@ -97,7 +97,7 @@ def box_detection(img_color, result, box):
     # print(pos)
     # cv2.waitKey()
 
-    if abs(pos[5]-pos[7]) <= 30:
+    if abs(pos[5]-pos[7]) <= 30: # 꼭짓점 2개가 한 곳에 잡히면(=정방향) 컨투어로 박스 검출
         # 컨투어 검출
         retval, img_bin = cv2.threshold(img_gray, 1, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
         val, contours, hierarchy = cv2.findContours(img_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -128,7 +128,7 @@ def box_detection(img_color, result, box):
         result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
         return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
 
-    else:
+    else: # 카메라가 비뚤어진 방향으로 잡으면 코너 디텍트로 박스 검출
         ''' 결과 반환 '''
         box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
         box = np.int0(box) # 정수형으로 변경
