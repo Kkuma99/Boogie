@@ -1929,4 +1929,6 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 
 - 정방향으로 잡을 때 후보2를 사용하는 코드를 작성해보고, 후보1과의 안정성을 비교
 
+![misdirected_error](https://user-images.githubusercontent.com/46590578/110633712-70d1e180-81ec-11eb-9a31-8a43061409bf.png)
+
 ### 적재 알고리즘
