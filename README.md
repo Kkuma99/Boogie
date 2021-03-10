@@ -1923,6 +1923,8 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 - 해결시도: 카메라가 박스를 정방향으로 잡을 때와, 비뚤어진 방향으로 잡을 때의 코드를 나누어서 작성 (성공)
 	- 조건: 후보1 사용; 정방향: 후보1 사용; 비뚤어진방향: 원래 코드 그대로 사용 
 	- 크기가 다른 박스들도 모두 올바르게 박스의 윤곽을 잡는 것을 확인
+![right_direction_camera](https://user-images.githubusercontent.com/46590578/110625083-5430ac00-81e2-11eb-9f0c-1014051b9d27.png)
+![misdirected_camera](https://user-images.githubusercontent.com/46590578/110625135-64e12200-81e2-11eb-9a9a-1bae03f23150.png)
 
 - 정방향으로 잡을 때 후보2를 사용하는 코드를 작성해보고, 후보1과의 안정성을 비교
 
