@@ -97,7 +97,8 @@ def box_detection(img_color, result, box):
     # print(pos)
     # cv2.waitKey()
 
-    if abs(pos[5]-pos[7]) <= 30:
+    if abs(pos[5]-pos[7]) <= 30: # 박스가 카메라에 정방향으로 잡힌다면
+        
         # 컨투어 검출
         retval, img_bin = cv2.threshold(img_gray, 1, 255, cv2.THRESH_BINARY)  # 바이너리 이미지 생성
         val, contours, hierarchy = cv2.findContours(img_bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -220,7 +221,8 @@ def draw_truck(x_range, y_range, z_range):
 
 # 적재 순서를 계산하는 알고리즘을 수행하는 함수
 def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck):
-
+    
+    ''' 변수 및 리스트 선언 '''
     # 각 지역별 상자의 개수만큼 배열 생성(각 상자의 적재 여부 저장)
     check = []
     for i in range(0, NUM_LOCAL): # 운송지 개수만큼 카테고리 생성
@@ -231,7 +233,6 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
     sum_num_box = 0  # 각 지역별 적재 범위를 계산하기 위함, 전체 박스의 개수
     finish = [0, 0, 0]  # 각 지역별 적재 완료된 상자의 개수를 저장할 변수
 
-    # 측정을 위한 변수
     count_W = 0  # 상자를 적재할 빈 공간의 너비를 측정하기 위한 변수 (Y축)
     count_L = 0  # 막힌 공간의 길이를 측정하기 위한 변수 (X축)
     count_H = 0  # 막힌 공간의 높이를 측정하기 위한 변수 (Z축)
@@ -399,7 +400,7 @@ truck = np.zeros((TRUCK_L, TRUCK_W, TRUCK_H), dtype=np.int8)
 # 바코드 데이터 초기화
 barcode_data = "XXX"
 
-# Read image (640*480)
+# 이미지 읽어오기 (640*480)
 cap = cv2.VideoCapture('/dev/video1')  # 내장카메라: 0 / USB카메라: 1
 cap.set(cv2.CAP_PROP_FPS, 30)          # 프레임속도 30으로 설정
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)     # 프레임 너비 640으로 설정
@@ -408,15 +409,18 @@ cv2.namedWindow('LOGI', cv2.WINDOW_NORMAL) # 화면 설정
 
 # 지속적인 영상처리를 위한 루프
 while True:
-    ret, img_color = cap.read()  # 카메라로부터 이미지를 읽어옴
-    if not ret: continue  # 캡처에 실패할 경우 반복문의 첫 줄부터 수행하도록 함
-    result = img_color.copy()  # 화면에 표시하기 위해 원본 이미지를 결과 이미지에 복사
+    ''' 1. 이미지 읽어오기 '''
+    ret, img_color = cap.read() # 카메라로부터 이미지를 읽어옴
+    if not ret: continue        # 캡처에 실패할 경우 반복문의 첫 줄부터 수행하도록 함
+    result = img_color.copy()   # 화면에 표시하기 위해 원본 이미지를 결과 이미지에 복사
 
+    ''' 2. 상자 인식 및 정보 전송 '''
     result, box = box_detection(img_color, result, box)  # 상자 인식
     barcode_data, result = get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX)  # 상자 정보
     send_data_to_host(barcode_data)  # 바코드 데이터를 Host PC로 전송
     cv2.imshow('LOGI', result)  # 화면에 표시
 
+    ''' 3. 종료 '''
     if cv2.waitKey(1) & 0xFF == 27:  # 1초 단위로 업데이트되며, ESC키를 누르면 탈출하여 종료
         send_data_to_host("END")  # 종료 상태 전송
         break
@@ -428,6 +432,7 @@ cv2.destroyAllWindows()
 # 입력받은 모든 상자 정보를 출력
 print(inputBox)
 
+''' 4. 트럭에 상자 적재 '''
 # 트럭의 시각화를 위한 설정
 fig = plt.figure()
 ax = fig.gca(projection='3d')
