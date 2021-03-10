@@ -1928,7 +1928,7 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 ![misdirected_camera](https://user-images.githubusercontent.com/46590578/110625135-64e12200-81e2-11eb-9a9a-1bae03f23150.png)
 
 - 정방향으로 잡을 때 후보2를 사용하는 코드를 작성해보고, 후보1과의 안정성을 비교
-	- 기준으로 삼을 X의 최소 좌표, X의 최대 좌표는 잘 찾지만, 오른쪽 하단 꼭짓점 pos[4], pos[5]를 왼쪽 하단 꼭짓점인 pos[2], pos[3]과 똑같이 잡음
+	- 오류: 기준으로 삼을 X의 최소 좌표, X의 최대 좌표는 잘 찾지만, 오른쪽 하단 꼭짓점 pos[4], pos[5]를 왼쪽 하단 꼭짓점인 pos[2], pos[3]과 똑같이 잡음
 		- 오류의 원인은 찾지 못한 상태이나, 앞서 시도한 해결방법의 성능이 충분히 좋았으므로 이것을 사용하고 이 코드는 더이상 시도X 
 
 ![misdirected_error](https://user-images.githubusercontent.com/46590578/110633712-70d1e180-81ec-11eb-9a31-8a43061409bf.png)
