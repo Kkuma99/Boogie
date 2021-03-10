@@ -70,46 +70,75 @@ def box_detection(img_color, result, box):
     ''' 검출된 전경의 꼭짓점 찾기 '''
     # 전경의 꼭짓점을 찾기 위해 코너 디텍트
     img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    corners = cv2.goodFeaturesToTrack(img_gray, 40, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
+    corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이미지, 코너 최대 검출 개수, 코너 강도, 코너 사이의 거리
     
     # 코너로 검출된 점에서 최소 좌표와 최대 좌표를 찾아서 꼭짓점 결정
-    pos = [0, 10000, 0, -1, 0, -1, 0, 10000] # x, min_y, x, max_y, x, max_y, x, min_y
-    min_x = 10000
-    max_x = -1
-
+    pos = [0, 10000, 10000, 0, 0, -1, -1, 0] # x, min_y, min_x, y, x, max_y, max_x, y
     for i in corners:
         x, y = i[0]
-        if 5 < x < 635 and 5 < y < 475: # 카메라 화면의 꼭짓점 검출 방지
-            if x < min_x: min_x = x # X의 최소 좌표 찾기
-            if x > max_x: max_x = x # X의 최대 좌표 찾기
-            cv2.circle(img_color, (x, y), 3, (0, 0, 255), 2) # 코너에 원으로 표시
-
-    for i in corners:
-        x, y = i[0]
-        if min_x - 20 < x < min_x + 20:
+        if x > 5 and y > 5 and x < 635 and y < 475: # 카메라 화면의 꼭짓점 검출 방지
             if y < pos[1]: # Y의 최소 좌표 찾기 (왼쪽 상단)
                 pos[0] = x
                 pos[1] = y
-            if y > pos[3]: # Y의 최대 좌표 찾기 (왼쪽 하단)
+            if x < pos[2]: # X의 최소 좌표 찾기 (왼쪽 하단)
                 pos[2] = x
                 pos[3] = y
-
-        if max_x - 20 < x < max_x + 20:
             if y > pos[5]: # Y의 최대 좌표 찾기 (오른쪽 하단)
                 pos[4] = x
                 pos[5] = y
-            if y < pos[7]: # Y의 최소 좌표 찾기 (오른쪽 상단)
+            if x > pos[6]: # X의 최대 좌표 찾기 (오른쪽 상단)
                 pos[6] = x
                 pos[7] = y
-    
-    cv2.imshow('corner', img_color) # 코너가 표시된 이미지 확인
+
+    print(pos)
     cv2.waitKey()
 
-    ''' 결과 반환 '''
-    box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
-    box = np.int0(box) # 정수형으로 변경
-    result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
-    return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
+    if abs(pos[5]-pos[7]) <= 30:
+        min_x = 10000
+        max_x = -1
+
+        for i in corners:
+            x, y = i[0]
+            if 5 < x < 635 and 5 < y < 475: # 카메라 화면의 꼭짓점 검출 방지
+                if x < min_x: min_x = x # X의 최소 좌표 찾기
+                if x > max_x: max_x = x # X의 최대 좌표 찾기
+
+        # cv2.circle(img_color, (min_x, 240), 3, (0, 0, 255), 2) # 코너에 원으로 표시
+        # cv2.circle(img_color, (max_x, 240), 3, (0, 0, 255), 2) # 코너에 원으로 표시
+
+        for i in corners:
+            x, y = i[0]
+            if min_x - 10 < x < min_x + 10:
+                if y < pos[1]: # Y의 최소 좌표 찾기 (왼쪽 상단)
+                    pos[0] = x
+                    pos[1] = y
+                if y > pos[3]: # Y의 최대 좌표 찾기 (왼쪽 하단)
+                    pos[2] = x
+                    pos[3] = y
+
+            if max_x - 10 < x < max_x + 10:
+                if y > pos[5]: # Y의 최대 좌표 찾기 (오른쪽 하단)
+                    pos[4] = x
+                    pos[5] = y
+                if y < pos[7]: # Y의 최소 좌표 찾기 (오른쪽 상단)
+                    pos[6] = x
+                    pos[7] = y
+
+        print(pos)
+        cv2.waitKey()
+
+        ''' 결과 반환 '''
+        box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
+        box = np.int0(box) # 정수형으로 변경
+        result = cv2.drawContours(result, [box], 0, (0, 255, 0), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+        return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
+
+    else:
+        ''' 결과 반환 '''
+        box = ((pos[0], pos[1]), (pos[2], pos[3]), (pos[4], pos[5]), (pos[6], pos[7])) # 꼭짓점 지정
+        box = np.int0(box) # 정수형으로 변경
+        result = cv2.drawContours(result, [box], 0, (0, 0, 255), 2) # 찾아낸 꼭짓점을 따라 윤곽선 그려줌
+        return result, box # 윤곽선 그려진 전체 이미지, 꼭짓점 반환
 
 
 # 상자의 크기와 바코드 정보를 얻어내는 알고리즘을 수행하는 함수
@@ -411,4 +440,3 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 draw_truck(np.array([0, TRUCK_L]), np.array([0, TRUCK_W]), np.array([0, TRUCK_H]))  # 트럭 시각화
 calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox, truck)  # 상자 적재 순서 계산 및 시각화
-
