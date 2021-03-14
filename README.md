@@ -2435,7 +2435,8 @@ calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, inputBox,
                                 pos_X = x  # 상자를 적재할 x축 좌표 저장
                                 pos_Y = y  # 상자를 적재할 y축 좌표 저장
                                 pos_Z = floor * BOX_H # 상자를 적재할 z축 좌표 저장 # 이 부분 수정하면 높이에 따라 적재 가능?
-                                count_W = 1  # 빈 공간의 너비를 세기 시작함```
+                                count_W = 1  # 빈 공간의 너비를 세기 시작함
+```
 ```python
                 if check[i][j] == 0 and j in inputBox[i]:    # 0. 아직 적재하지 않은 상자이고
                     if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W 이하면
