@@ -211,12 +211,12 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 # 트럭 내부 모습을 시각화하는 함수
 def draw_truck(x_range, y_range, z_range):
     yy, zz = np.meshgrid(y_range, z_range)  # 2차원의 평면에 정사각형 또는 직사각형 그리드 생성
-    ax.plot_wireframe(x_range[0], yy, zz, color="black")  # 값의 그리드를 사용하여 3차원 평면에 투영
-    ax.plot_wireframe(x_range[1], yy, zz, color="black")
+    ax.plot_wireframe(x_range[0], yy, zz, color="black")  # 값의 그리드를 사용하여 3차원 평면에 투영 (앞 사각형)
+    ax.plot_wireframe(x_range[1], yy, zz, color="black")  # 뒷 사각형
 
     xx, zz = np.meshgrid(x_range, z_range)
-    ax.plot_wireframe(xx, y_range[0], zz, color="black")
-    ax.plot_wireframe(xx, y_range[1], zz, color="black")
+    ax.plot_wireframe(xx, y_range[0], zz, color="black")  # 왼쪽 사각형
+    ax.plot_wireframe(xx, y_range[1], zz, color="black")  # 오른쪽 사각형
 
 
 # 적재 순서를 계산하는 알고리즘을 수행하는 함수
