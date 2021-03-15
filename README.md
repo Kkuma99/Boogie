@@ -2095,6 +2095,44 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 ### 무게를 고려한 적재 알고리즘
 
+'''python
+# 적재할 상자를 선택할 때, 최대 무게를 가진 상자를 선택할 수 있도록 조건 추가
+
+            ''' 적재할 상자 선택(6가지 조건 확인) '''
+            max_box_W = 0  # count_W 너비 안에 들어갈 수 있는 상자의 최대 너비
+            max_box_K = 0  # 상자의 최대 무게
+
+            for j in range(NUM_BOX[i]): # 박스 하나하나에 대해 모두 검사
+                cannot_load = 0
+
+                if check[i][j] == 0 and j in inputBox[i]:    # 0. 아직 적재하지 않은 상자이고
+                    if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W(앞에서 측정함) 이하면
+                        if inputBox[i][j]['w'] > max_box_W:  # 2. 최대 너비를 가진 상자를 찾음
+                            if inputBox[i][j]['k'] > max_box_K:  # 3. 최대 무게를 가진 상자를 찾음
+
+                                # 4. 해당 위치에 상자를 적재했을 때 트럭 높이를 넘지 않는지 확인
+                                count_H = 0  
+                                while truck[pos_X][pos_Y][count_H] != 0: count_H += 1 # 해당 위치에 상자 적재 전 높이를 구해줌
+                                if count_H + inputBox[i][j]['h'] > TRUCK_H: continue # 높이 넘으면 불합격
+
+                                # 5. 해당 위치에 상자를 적재했을 때 트럭 길이를 넘지 않는지 확인
+                                count_L = 0
+                                while truck[count_L][pos_Y][pos_Z] != 0: count_L += 1 # 해당 위치에 상자 적재 전 길이를 구해줌
+                                if count_L + inputBox[i][j]['l'] > TRUCK_L: continue # 길이 넘으면 불합격
+
+                                # 6. 적재할 상자의 아래가 막혀있는지 확인
+                                if pos_Z != 0:  # 가장 아래층인 경우는 제외
+                                    for x in range(inputBox[i][j]['l']):
+                                        for y in range(inputBox[i][j]['w']):
+                                            if truck[pos_X + x][pos_Y + y][pos_Z - 1] == 0: # 막혀있지 않다면 # 이 부분 수정하면 높이에 따라 적재 가능?2
+                                                cannot_load = 1 # 적재할 수 없음
+                                                break
+                                    if cannot_load == 1: continue # 불합격
+
+                                boxIndex = j  # 적재할 상자 인덱스 저장
+                                max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+                                max_box_K = inputBox[i][j]['k']  # 최대 무게 갱신
+'''
 
 #### 다음 할 일
 
