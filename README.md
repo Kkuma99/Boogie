@@ -2026,9 +2026,40 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 
 ### 기존의 적재 알고리즘
 
-- 수정한 코드 업데이트 완료
+- 수정한 코드 테스트 및 업데이트 완료
+
 - 이해 안되는 부분 다시 보기
+	- 그래프 그리기
+	- [함수설명](https://www.tutorialspoint.com/matplotlib/matplotlib_3d_wireframe_plot.htm)
 ```python
+# 트럭 내부 모습을 시각화하는 함수
+def draw_truck(x_range, y_range, z_range):
+    yy, zz = np.meshgrid(y_range, z_range)  # 2차원의 평면에 정사각형 또는 직사각형 그리드 생성
+    ax.plot_wireframe(x_range[0], yy, zz, color="black")  # 값의 그리드를 사용하여 3차원 평면에 투영
+    ax.plot_wireframe(x_range[1], yy, zz, color="black")
+
+    xx, zz = np.meshgrid(x_range, z_range)
+    ax.plot_wireframe(xx, y_range[0], zz, color="black")
+    ax.plot_wireframe(xx, y_range[1], zz, color="black")
+    
+''''''
+
+# 트럭의 시각화를 위한 설정
+fig = plt.figure()             # Figure 객체 생성
+ax = fig.gca(projection='3d')  # Axe3D 객체 생성; 이 객체에 그림이 그려짐
+ax.set_aspect('auto')          # X축과 Y축의 비율을 자동으로 결정
+colors = ['gold', 'dodgerblue', 'limegreen']
+```
+
+	- 측정 모드
+```python
+
+'''x와 y 좌표를 모두 확인하는데, 
+1_1. 만약 비어 있는데 측정모드 아니라면 측정모드로 바꾸고 상자를 적재할 위치 저장
+1_2. 비어있는데 측정모드라면 상자가 들어갈 너비를 측정 (위치를 저장해놓고 너비 측정하는 것임)
+2. Y축 방향으로 검사하다가 애매한 공간이면 측정모드 해제하기 (더 이상 너비를 측정하지 않음)
+*해당 X축 방향에서 빈 공간을 찾았다면 X축을 더 보지않고 탈출'''
+
            for x in range(TRUCK_L):  # X축 방향으로 검사
                 count_W = 0
                 for y in range(TRUCK_W):  # Y축 방향으로 검사
@@ -2040,7 +2071,7 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
                                 MIN_L = x  # 최소값 갱신
                                 pos_X = x  # 상자를 적재할 x축 좌표 저장
                                 pos_Y = y  # 상자를 적재할 y축 좌표 저장
-                                pos_Z = floor * BOX_H # 상자를 적재할 z축 좌표 저장 # 이 부분 수정하면 높이에 따라 적재 가능?
+                                pos_Z = floor * BOX_H # 상자를 적재할 z축 좌표 저장
                                 count_W = 1  # 빈 공간의 너비를 세기 시작함
                         else:  # 측정모드면
                             count_W += 1  # 상자가 들어갈 수 있는 너비를 측정하기 위해 count_W를 증가
@@ -2050,40 +2081,10 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 
                 if count_W > 0: break # 해당 줄에 빈 공간이 있었다면 x에 대한 반복문 탈출
 ```
-```python
-            if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
-                for y in range(count_W):
-                    for z in range(BOX_H): # 이 부분 수정하면 높이에 따라 적재 가능?3
-                        truck[pos_X][pos_Y + y][pos_Z + z] = 2 # 빈공간은 2로 채우기
-```
 
-- 높이나 무게 고려를 위해 수정할 후보
+	- 빈공간 채우기
 ```python
-                            if x < MIN_L:  # 적재한 상자들이 차지하는 공간의 길이의 최소값이면
-                                measureMode = 1  # 측정 모드로 전환
-                                MIN_L = x  # 최소값 갱신
-                                pos_X = x  # 상자를 적재할 x축 좌표 저장
-                                pos_Y = y  # 상자를 적재할 y축 좌표 저장
-                                pos_Z = floor * BOX_H # 상자를 적재할 z축 좌표 저장 # 이 부분 수정하면 높이에 따라 적재 가능?
-                                count_W = 1  # 빈 공간의 너비를 세기 시작함
-```
-```python
-                if check[i][j] == 0 and j in inputBox[i]:    # 0. 아직 적재하지 않은 상자이고
-                    if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W 이하면
-                        if inputBox[i][j]['w'] > max_box_W:  # 2. 최대 너비를 가진 상자를 찾음
-                            # 이 부분에 무게에 대한 조건 추가? 최대 무게를 가진 상자를 찾음
-```
-```python
-                            # 5. 적재할 상자의 아래가 막혀있는지 확인
-                            if pos_Z != 0:  # 가장 아래층인 경우는 제외
-                                for x in range(inputBox[i][j]['l']):
-                                    for y in range(inputBox[i][j]['w']):
-                                        if truck[pos_X + x][pos_Y + y][pos_Z - 1] == 0: # 막혀있지 않다면 # 이 부분 수정하면 높이에 따라 적재 가능?2
-                                            cannot_load = 1 # 적재할 수 없음
-                                            break
-                                if cannot_load == 1: continue # 불합격
-```
-```python
+''' 왜 X축은 고려를 안하고 빈공간을 채울까? 이러면 평면 사각형 그려지지않나? '''
             if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
                 for y in range(count_W):
                     for z in range(BOX_H): # 이 부분 수정하면 높이에 따라 적재 가능?3
@@ -2094,3 +2095,6 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 
 
 #### 다음 할 일
+
+1. 무게 고려해서 수정해보기
+2. (높이 고려해서 수정해보기)
