@@ -210,8 +210,8 @@ def get_box_info(img_color, result, box, barcode_data, inputBox, NUM_BOX):
 
 # 트럭 내부 모습을 시각화하는 함수
 def draw_truck(x_range, y_range, z_range):
-    yy, zz = np.meshgrid(y_range, z_range)
-    ax.plot_wireframe(x_range[0], yy, zz, color="black")
+    yy, zz = np.meshgrid(y_range, z_range)  # 2차원의 평면에 정사각형 또는 직사각형 그리드 생성
+    ax.plot_wireframe(x_range[0], yy, zz, color="black")  # 값의 그리드를 사용하여 3차원 평면에 투영
     ax.plot_wireframe(x_range[1], yy, zz, color="black")
 
     xx, zz = np.meshgrid(x_range, z_range)
@@ -281,19 +281,19 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
                         else:  # 측정모드면
                             count_W += 1  # 상자가 들어갈 수 있는 너비를 측정하기 위해 count_W를 증가
 
-                    else:  # 1 또는 2이면 (막혀있는 공간이면)
+                    else:  # 1 또는 2이면 (애매한 공간이면)
                         if measureMode == 1: measureMode = 0  # 측정 모드였다면 측정 모드 해제
 
                 if count_W > 0: break # 해당 줄에 빈 공간이 있었다면 x에 대한 반복문 탈출
 
             ''' 적재할 상자 선택(5가지 조건 확인) '''
-            max_box_W = 0  # count_W 너비 안에 들어갈 수 있는 최대 너비의 상자 너비
+            max_box_W = 0  # count_W 너비 안에 들어갈 수 있는 상자의 최대 너비
 
             for j in range(NUM_BOX[i]): # 박스 하나하나에 대해 모두 검사
                 cannot_load = 0
 
                 if check[i][j] == 0 and j in inputBox[i]:    # 0. 아직 적재하지 않은 상자이고
-                    if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W 이하면
+                    if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W(앞에서 측정) 이하면
                         if inputBox[i][j]['w'] > max_box_W:  # 2. 최대 너비를 가진 상자를 찾음
                             # 이 부분에 무게에 대한 조건 추가? 최대 무게를 가진 상자를 찾음
 
@@ -366,7 +366,7 @@ def calculate_loading_order(NUM_LOCAL, NUM_BOX, TRUCK_L, TRUCK_W, TRUCK_H, input
                 plt.draw() # 화면에 그리기
                 plt.pause(0.0001)
                 print("This Box is [%s%02d]" % (chr(i + 65), boxIndex)) # 현재 적재한 상자의 정보를 화면에 출력
-                input("Press Enter to load next box") # 엔터 입력하면 다음 상자 적재
+                input("Press Enter to load next box\n") # 엔터 입력하면 다음 상자 적재
 
     print("Finish loading all your boxes!")
     plt.draw()    # 마지막으로 그려주기
@@ -426,18 +426,17 @@ while True:
         send_data_to_host("END")  # 종료 상태 전송
         break
 
-# 영상처리에 사용된 메모리를 해제
-cap.release()
-cv2.destroyAllWindows()
+cap.release() # 영상처리에 사용된 메모리를 해제
+cv2.destroyAllWindows() # 모든 창 닫아주기
 
 # 입력받은 모든 상자 정보를 출력
 print(inputBox)
 
 ''' 4. 트럭에 상자 적재 '''
 # 트럭의 시각화를 위한 설정
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-ax.set_aspect('auto')
+fig = plt.figure()             # Figure 객체 생성
+ax = fig.gca(projection='3d')  # Axe3D 객체 생성; 이 객체에 그림이 그려짐
+ax.set_aspect('auto')          # X축과 Y축의 비율을 자동으로 결정
 colors = ['gold', 'dodgerblue', 'limegreen']
 
 draw_truck(np.array([0, TRUCK_L]), np.array([0, TRUCK_W]), np.array([0, TRUCK_H]))  # 트럭 시각화
