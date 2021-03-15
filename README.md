@@ -2029,9 +2029,11 @@ corners = cv2.goodFeaturesToTrack(img_gray, 100, 0.01, 5) # 코너를 찾을 이
 - 수정한 코드 테스트 및 업데이트 완료
 
 - 이해 안되는 부분 다시 보기
-	- 그래프 그리기
-	- [함수설명](https://www.tutorialspoint.com/matplotlib/matplotlib_3d_wireframe_plot.htm)
 ```python
+''' 1. 그래프 그리기 '''
+
+''' https://www.tutorialspoint.com/matplotlib/matplotlib_3d_wireframe_plot.htm '''
+
 # 트럭 내부 모습을 시각화하는 함수
 def draw_truck(x_range, y_range, z_range):
     yy, zz = np.meshgrid(y_range, z_range)  # 2차원의 평면에 정사각형 또는 직사각형 그리드 생성
@@ -2041,8 +2043,6 @@ def draw_truck(x_range, y_range, z_range):
     xx, zz = np.meshgrid(x_range, z_range)
     ax.plot_wireframe(xx, y_range[0], zz, color="black")
     ax.plot_wireframe(xx, y_range[1], zz, color="black")
-    
-''''''
 
 # 트럭의 시각화를 위한 설정
 fig = plt.figure()             # Figure 객체 생성
@@ -2051,8 +2051,8 @@ ax.set_aspect('auto')          # X축과 Y축의 비율을 자동으로 결정
 colors = ['gold', 'dodgerblue', 'limegreen']
 ```
 
-	- 측정 모드
 ```python
+''' 2. 측정 모드 '''
 
 '''x와 y 좌표를 모두 확인하는데, 
 1_1. 만약 비어 있는데 측정모드 아니라면 측정모드로 바꾸고 상자를 적재할 위치 저장
@@ -2082,9 +2082,11 @@ colors = ['gold', 'dodgerblue', 'limegreen']
                 if count_W > 0: break # 해당 줄에 빈 공간이 있었다면 x에 대한 반복문 탈출
 ```
 
-	- 빈공간 채우기
 ```python
+''' 3. 빈공간 채우기 '''
+
 ''' 왜 X축은 고려를 안하고 빈공간을 채울까? 이러면 평면 사각형 그려지지않나? '''
+
             if max_box_W == 0:  # 해당 공간에 적재할 수 있는 상자가 없다면 빈공간 채우기
                 for y in range(count_W):
                     for z in range(BOX_H): # 이 부분 수정하면 높이에 따라 적재 가능?3
