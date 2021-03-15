@@ -2095,8 +2095,8 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 ### 무게를 고려한 적재 알고리즘
 
-'''python
-#적재할 상자를 선택할 때, 최대 무게를 가진 상자를 선택할 수 있도록 조건 추가
+```python
+# 적재할 상자를 선택할 때, 최대 무게를 가진 상자를 선택할 수 있도록 조건 추가
 
             ''' 적재할 상자 선택(6가지 조건 확인) '''
             max_box_W = 0  # count_W 너비 안에 들어갈 수 있는 상자의 최대 너비
@@ -2132,7 +2132,7 @@ colors = ['gold', 'dodgerblue', 'limegreen']
                                 boxIndex = j  # 적재할 상자 인덱스 저장
                                 max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
                                 max_box_K = inputBox[i][j]['k']  # 최대 무게 갱신
-'''
+```
 
 #### 다음 할 일
 
