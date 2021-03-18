@@ -2143,12 +2143,12 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 
 ## 2021.03.18
 
-### 무게 고려 적재 알고리즘
+### 무게 고려 적재 알고리즘 [완료]
 
 - 무게 정보를 추가한 새로운 바코드 생성 (https://wepplication.github.io/tools/barcodeGen/)
 	- 새로운 바코드를 인식하고 무게 정보를 제대로 읽는 것을 확인
 	- 폰으로 이미지를 다운받아 인식시켜서인지, 바코드 자체의 문제인지 바코드를 잘 인식하는 것은 아님
-		- 추후 바코드 라벨 사이즈에 맞게 생성 후 테스트 해보아야 확인 가능할 듯
+		- 추후 바코드 라벨 사이즈에 맞게 생성하여 박스에 붙인 후 테스트 해보아야 확인 가능할 듯
 
 ![test1](https://user-images.githubusercontent.com/46590578/111612548-ebb87f00-8820-11eb-8292-fbefc0c4151d.png)
 ![test2](https://user-images.githubusercontent.com/46590578/111612587-f410ba00-8820-11eb-8546-63d8768ec23b.png)
@@ -2160,14 +2160,52 @@ colors = ['gold', 'dodgerblue', 'limegreen']
 ```python
 send_data_to_host(barcode_data[0:3])  # 바코드 데이터를 Host PC로 전송, 무게 정보는 빼고 전송할 수 있도록 설정
 ```
+```python
+# 적재할 상자를 선택할 때, 최대 무게를 가진 상자를 선택할 수 있도록 조건 추가
+
+            ''' 적재할 상자 선택(6가지 조건 확인) '''
+            max_box_W = 0  # count_W 너비 안에 들어갈 수 있는 상자의 최대 너비
+            max_box_K = 0  # 상자의 최대 무게
+
+            for j in range(NUM_BOX[i]): # 박스 하나하나에 대해 모두 검사
+                cannot_load = 0
+
+                if check[i][j] == 0 and j in inputBox[i]:    # 0. 아직 적재하지 않은 상자이고
+                    if inputBox[i][j]['w'] <= count_W:       # 1. 너비가 count_W(앞에서 측정함) 이하면
+                        if inputBox[i][j]['w'] > max_box_W:  # 2. 최대 너비를 가진 상자를 찾음
+                            if inputBox[i][j]['k'] > max_box_K:  # 3. 최대 무게를 가진 상자를 찾음
+
+                                # 4. 해당 위치에 상자를 적재했을 때 트럭 높이를 넘지 않는지 확인
+                                count_H = 0  
+                                while truck[pos_X][pos_Y][count_H] != 0: count_H += 1 # 해당 위치에 상자 적재 전 높이를 구해줌
+                                if count_H + inputBox[i][j]['h'] > TRUCK_H: continue # 높이 넘으면 불합격
+
+                                # 5. 해당 위치에 상자를 적재했을 때 트럭 길이를 넘지 않는지 확인
+                                count_L = 0
+                                while truck[count_L][pos_Y][pos_Z] != 0: count_L += 1 # 해당 위치에 상자 적재 전 길이를 구해줌
+                                if count_L + inputBox[i][j]['l'] > TRUCK_L: continue # 길이 넘으면 불합격
+
+                                # 6. 적재할 상자의 아래가 막혀있는지 확인
+                                if pos_Z != 0:  # 가장 아래층인 경우는 제외
+                                    for x in range(inputBox[i][j]['l']):
+                                        for y in range(inputBox[i][j]['w']):
+                                            if truck[pos_X + x][pos_Y + y][pos_Z - 1] == 0: # 막혀있지 않다면 # 이 부분 수정하면 높이에 따라 적재 가능?2
+                                                cannot_load = 1 # 적재할 수 없음
+                                                break
+                                    if cannot_load == 1: continue # 불합격
+
+                                boxIndex = j  # 적재할 상자 인덱스 저장
+                                max_box_W = inputBox[i][j]['w']  # 최대 너비 갱신
+                                max_box_K = inputBox[i][j]['k']  # 최대 무게 갱신
+```
 
 - 적재 알고리즘에 미치는 영향
 	- 처음에 적재 알고리즘이 실행X -> 데이터를 보낼 때, 무게까지 같이 보낸 것이 오류 원인이었음
 	- 무게에 대한 조건이 너비에 대한 조건보다 우선순위가 낮으므로 무게가 가장 무겁다고 가장 먼저 적재되는 것은 아님
 
 - 참고
-	- smart_logi_system_jetson_rev2_corner.py: 무게 고려하지 않은 적재알고리즘 코드
-	- smart_logi_system_jetson_rev5_weight.py: 무게 고려한 적재알고리즘 코드
+	- smart_logi_system_jetson_rev2_corner.py: 무게 고려하지 않은 적재 알고리즘 코드
+	- smart_logi_system_jetson_rev5_weight.py: 무게 고려한 적재 알고리즘 코드
 
 #### 다음 할 일
 
