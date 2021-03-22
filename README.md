@@ -2229,13 +2229,13 @@ send_data_to_host(barcode_data[0:3])  # 바코드 데이터를 Host PC로 전송
 ### 추가적인 부분
 
 - 박스를 크라프트지로 감싸 더 실제적으로 제작
-	- 1. 다양한 규격의 작은 박스를 시중에서 구매하는 건 어떨까?
+	- 다양한 규격의 작은 박스를 시중에서 구매하는 건 어떨까?
 		- [박스구매](https://front.wemakeprice.com/product/981150866?utm_source=google_ss&utm_medium=cpc&utm_campaign=r_sa&gclid=Cj0KCQjw3duCBhCAARIsAJeFyPXN0j_Bit4gDQG7-qAcdDQIiA3Pf4KpWhUlZ65WyNuf9Y8Uv4anf1EaAvVIEALw_wcB)
 		- [박스주문제작](https://boxmania.co.kr/)
 			- 견적 문의 후 가격에 따라 다음 방안 결정 
-	- 2. 두꺼운 크라프트지로 미니 박스를 만드는 건 어떨까
+	- 두꺼운 크라프트지로 미니 박스를 만드는 건 어떨까
 		- [미니택배상자제작](https://www.youtube.com/watch?v=Cq5ECjitgVg)
-	- 3. 얇은 크라프트지를 기존 박스에 붙이는 건 어떨까
+	- 얇은 크라프트지를 기존 박스에 붙이는 건 어떨까
 
 - 컨베이어 벨트 자동화
 	- 아두이노와 모터를 활용
@@ -2243,5 +2243,5 @@ send_data_to_host(barcode_data[0:3])  # 바코드 데이터를 Host PC로 전송
 
 #### 다음 할 일
 
-강민지: 라벨지 출력, 박스 견적 문의
-백이주: 바코드 라벨지 파일 제작
+- 강민지: 라벨지 출력, 박스 견적 문의
+- 백이주: 바코드 라벨지 파일 제작
